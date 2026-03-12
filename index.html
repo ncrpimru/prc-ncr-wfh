@@ -3,22 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PRC-NCR WFH Daily Time Record</title>
+<title>PRC-NCR | WFH Daily Time Record</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#0a2342;--gold:#c9a84c;--gold-light:#f5edd0;--white:#fff;--off:#f8f7f4;--g100:#f2f2f2;--g200:#e5e5e5;--g400:#999;--g600:#666;--g800:#333;--red:#c0392b;--green:#1a6b3c;--shadow:0 2px 16px rgba(10,35,66,.10);--r:10px;--tr:.2s ease}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:#eef2f7;color:var(--g800);min-height:100vh}
-
-/* HEADER */
-.hdr{background:linear-gradient(135deg,var(--navy) 0%,#1a3a6b 100%);border-bottom:4px solid var(--gold);padding:0}
+.gmail-banner{background:linear-gradient(90deg,#1a6b3c,#2d9e5f);color:#fff;padding:10px 20px;text-align:center;font-size:.8rem;font-weight:600}
+.save-bar{background:#fff8e7;border-bottom:2px solid var(--gold);padding:8px 20px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:.78rem;color:#7d4f00;flex-wrap:wrap}
+.save-bar strong{color:var(--navy)}
+.save-indicator{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--green);font-weight:600;opacity:0;transition:opacity .4s}
+.save-indicator.show{opacity:1}
+.save-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hdr{background:linear-gradient(135deg,var(--navy) 0%,#1a3a6b 100%);border-bottom:4px solid var(--gold)}
 .hdr-inner{max-width:780px;margin:0 auto;padding:22px 20px 18px;display:flex;align-items:center;gap:18px}
 .hdr-logo{width:76px;height:76px;border-radius:50%;border:3px solid var(--gold);object-fit:cover;flex-shrink:0;box-shadow:0 4px 16px rgba(0,0,0,.3)}
 .hdr h1{font-family:'Playfair Display',serif;font-size:1.35rem;color:#fff;line-height:1.2}
 .hdr .sub{font-size:.75rem;color:#c9d8ef;margin-top:4px;letter-spacing:.07em;text-transform:uppercase}
 .hdr .badge{margin-top:7px;display:inline-block;background:var(--gold);color:var(--navy);font-size:.68rem;font-weight:700;padding:2px 10px;border-radius:20px;letter-spacing:.05em;text-transform:uppercase}
-
-/* PROGRESS */
 .prog-wrap{max-width:780px;margin:0 auto;padding:20px 20px 0}
 .steps{display:flex;margin-bottom:6px}
 .stp{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative}
@@ -33,20 +36,15 @@ body{font-family:'Inter',sans-serif;background:#eef2f7;color:var(--g800);min-hei
 .pbar{height:4px;background:var(--g200);border-radius:4px;overflow:hidden;margin-bottom:4px}
 .pbar-fill{height:100%;background:linear-gradient(90deg,var(--navy),var(--gold));border-radius:4px;transition:width .4s ease;width:20%}
 .plabel{font-size:.7rem;color:var(--g400);text-align:right;margin-bottom:16px}
-
-/* CARDS */
 .wrap{max-width:780px;margin:0 auto 50px;padding:0 20px}
 .card{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden;display:none;animation:fs .3s ease both}
 .card.active{display:block}
 @keyframes fs{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-
 .card-hdr{background:linear-gradient(90deg,var(--navy) 0%,#1a3a6b 100%);padding:14px 24px;display:flex;align-items:center;gap:12px}
 .card-icon{width:36px;height:36px;background:rgba(201,168,76,.2);border:2px solid var(--gold);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
 .card-hdr h2{font-family:'Playfair Display',serif;font-size:1rem;color:#fff;font-weight:600}
 .card-hdr p{font-size:.72rem;color:#aac4e0;margin-top:2px}
 .card-body{padding:24px}
-
-/* FIELDS */
 .fg{margin-bottom:18px}
 .fg:last-child{margin-bottom:0}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -60,15 +58,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 textarea{min-height:88px;resize:vertical}
 .info-box{padding:9px 12px;border:1.5px solid var(--g200);border-radius:7px;background:var(--g100);font-size:.88rem;color:var(--g600);min-height:40px;display:flex;align-items:center;font-style:italic}
 .info-box.filled{color:var(--navy);font-style:normal;font-weight:600;background:#eef2fa;border-color:#c5d3e8}
-
-/* ALERTS */
 .alert{padding:10px 14px;border-radius:7px;font-size:.8rem;display:flex;align-items:flex-start;gap:9px;margin-bottom:16px}
 .alert-info{background:#e8f0fb;border-left:4px solid #1560bd;color:#1a3d8f}
 .alert-warn{background:#fef9e7;border-left:4px solid var(--gold);color:#7d6008}
 .alert-success{background:#e8f5ee;border-left:4px solid var(--green);color:var(--green)}
 .alert-error{background:#fdf0f0;border-left:4px solid var(--red);color:var(--red)}
-
-/* PHOTO UPLOAD */
+.alert-save{background:#f0fff4;border-left:4px solid var(--green);color:var(--green)}
 .upload-area{border:2px dashed var(--g200);border-radius:9px;padding:24px 16px;text-align:center;cursor:pointer;transition:var(--tr);background:var(--g100);position:relative}
 .upload-area:hover{border-color:var(--navy);background:#eef2fa}
 .upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
@@ -80,8 +75,6 @@ textarea{min-height:88px;resize:vertical}
 .preview .rm{position:absolute;top:-8px;right:calc(50% - 90px);width:24px;height:24px;background:var(--red);color:#fff;border:none;border-radius:50%;cursor:pointer;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center}
 .upload-ok{display:none;align-items:center;gap:6px;margin-top:6px;font-size:.78rem;color:var(--green);font-weight:600}
 .upload-ok.show{display:flex}
-
-/* TASKS */
 .task-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 @media(max-width:560px){.task-grid{grid-template-columns:1fr}}
 .task-cb{display:flex;align-items:flex-start;gap:8px;padding:9px 11px;border:1.5px solid var(--g200);border-radius:7px;cursor:pointer;transition:var(--tr);background:var(--g100)}
@@ -89,25 +82,20 @@ textarea{min-height:88px;resize:vertical}
 .task-cb.chk{border-color:var(--navy);background:#eef2fa}
 .task-cb input{margin-top:2px;flex-shrink:0;accent-color:var(--navy);width:14px;height:14px}
 .task-cb span{font-size:.78rem;line-height:1.4}
-
-/* TIMESTAMPS */
 .ts{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:7px;border:1.5px solid;margin-top:6px}
 .ts.tin{background:#e8f5ee;border-color:#a8d5b5;color:var(--green)}
 .ts.tout{background:#fdf0e8;border-color:#f5c4a0;color:#b45309}
 .ts-icon{font-size:1.4rem}
 .ts-lbl{font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
 .ts-val{font-size:1rem;font-weight:700;font-family:'Playfair Display',serif}
-
-/* SUMMARY */
 .sum-card{background:linear-gradient(135deg,#f8f7f4,#eef2fa);border:1.5px solid var(--g200);border-radius:9px;padding:18px 22px;margin-bottom:14px}
 .sum-card h3{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--navy);margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--g200)}
 .sum-row{display:flex;justify-content:space-between;align-items:flex-start;padding:4px 0;font-size:.82rem;gap:10px}
 .sum-row .sk{color:var(--g600);font-weight:500;flex-shrink:0}
 .sum-row .sv{color:var(--navy);font-weight:600;text-align:right}
 .task-tag{display:inline-block;background:var(--navy);color:#fff;font-size:.68rem;padding:2px 8px;border-radius:10px;margin:2px 2px 2px 0;font-weight:500}
-
-/* BUTTONS */
 .btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap}
+.btn-row-split{display:flex;gap:10px;justify-content:space-between;margin-top:22px;flex-wrap:wrap;align-items:center}
 .btn{padding:10px 24px;border-radius:7px;font-family:'Inter',sans-serif;font-size:.84rem;font-weight:600;cursor:pointer;border:none;transition:var(--tr);display:flex;align-items:center;gap:7px}
 .btn-primary{background:var(--navy);color:#fff;box-shadow:0 2px 8px rgba(10,35,66,.18)}
 .btn-primary:hover{background:#1a3a6b;transform:translateY(-1px)}
@@ -116,36 +104,55 @@ textarea{min-height:88px;resize:vertical}
 .btn-gold{background:var(--gold);color:var(--navy);box-shadow:0 2px 8px rgba(201,168,76,.3)}
 .btn-gold:hover{background:#b8943a;transform:translateY(-1px)}
 .btn-gold:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;transform:none;box-shadow:none}
-
-/* DIVIDER */
+.btn-save{background:#e8f5ee;color:var(--green);border:1.5px solid #a8d5b5;font-size:.78rem;padding:8px 16px}
+.btn-save:hover{background:#d0eedd}
+.btn-clear{background:#fdf0f0;color:var(--red);border:1.5px solid #f5c0c0;font-size:.78rem;padding:8px 16px}
+.btn-clear:hover{background:#fde0e0}
 .div{height:1px;background:var(--g200);margin:18px 0}
-
-/* SUCCESS */
 .success{text-align:center;padding:44px 24px 36px}
 .s-icon{font-size:3.5rem;margin-bottom:14px;animation:pop .5s cubic-bezier(.175,.885,.32,1.275) both}
 @keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
 .success h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--navy);margin-bottom:7px}
 .success p{color:var(--g600);font-size:.87rem;max-width:400px;margin:0 auto 5px}
 .ref{display:inline-block;background:var(--navy);color:#fff;font-size:1rem;font-weight:700;padding:7px 22px;border-radius:7px;margin:14px 0;letter-spacing:.08em;font-family:'Playfair Display',serif}
-
-/* VALIDATION */
 .ferr{border-color:var(--red)!important;background:#fff5f5!important}
 .err-msg{font-size:.72rem;color:var(--red);margin-top:3px;display:none}
 .err-msg.show{display:block}
-
-/* SPINNER */
 .spinner{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* SUBMITTING OVERLAY */
-.submitting-msg{display:none;text-align:center;padding:12px;background:#eef2fa;border-radius:7px;margin-top:12px;font-size:.84rem;color:var(--navy);font-weight:600}
-
+.script-box{background:#fff8e7;border:1.5px solid var(--gold);border-radius:8px;padding:14px;margin-bottom:16px}
+.script-box label{color:#7d4f00}
 .hidden{display:none!important}
 .footer{max-width:780px;margin:0 auto;padding:0 20px 36px;text-align:center;font-size:.7rem;color:var(--g400)}
 .footer strong{color:var(--navy)}
+
+/* RESUME BANNER */
+.resume-banner{background:linear-gradient(90deg,#1a3a6b,#0a2342);border-radius:var(--r);padding:18px 22px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.resume-banner .rb-text h3{font-family:'Playfair Display',serif;color:var(--gold);font-size:1rem;margin-bottom:4px}
+.resume-banner .rb-text p{color:#aac4e0;font-size:.78rem}
+.resume-banner .rb-btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn-resume{background:var(--gold);color:var(--navy);font-weight:700;font-size:.82rem;padding:9px 18px;border-radius:7px;border:none;cursor:pointer;transition:var(--tr)}
+.btn-resume:hover{background:#b8943a}
+.btn-discard{background:rgba(255,255,255,.1);color:#fff;font-size:.78rem;padding:9px 14px;border-radius:7px;border:1px solid rgba(255,255,255,.2);cursor:pointer;transition:var(--tr)}
+.btn-discard:hover{background:rgba(255,255,255,.2)}
+
+/* PROGRESS SAVED TAGS on steps */
+.stp-saved::after{content:'✓';font-size:.55rem;background:var(--green);color:#fff;border-radius:50%;width:12px;height:12px;display:flex;align-items:center;justify-content:center;position:absolute;top:0;right:calc(50% - 20px);font-weight:900}
 </style>
 </head>
 <body>
+
+<div class="gmail-banner">
+  🌐 PUBLIC ACCESS VERSION — Open to all users &nbsp;|&nbsp; <strong>Auto-Save Enabled</strong> 💾
+</div>
+
+<!-- AUTO-SAVE STATUS BAR -->
+<div class="save-bar">
+  <span>💾 Your progress is <strong>automatically saved</strong> on this device. You can close the browser and come back anytime.</span>
+  <span class="save-indicator" id="saveIndicator">
+    <span class="save-dot"></span> Saved
+  </span>
+</div>
 
 <header class="hdr">
   <div class="hdr-inner">
@@ -172,24 +179,35 @@ textarea{min-height:88px;resize:vertical}
 
 <div class="wrap">
 
-<!-- ── SECTION 1: PERSONNEL INFO ─────────────────────────────────── -->
+<!-- RESUME BANNER (shown when saved data exists) -->
+<div class="resume-banner hidden" id="resumeBanner">
+  <div class="rb-text">
+    <h3>📂 Saved Progress Found!</h3>
+    <p id="resumeInfo">You have unfinished answers from a previous session. Resume where you left off?</p>
+  </div>
+  <div class="rb-btns">
+    <button class="btn-resume" onclick="resumeProgress()">▶ Resume Progress</button>
+    <button class="btn-discard" onclick="discardProgress()">🗑 Start Fresh</button>
+  </div>
+</div>
+
+<!-- SECTION 1 -->
 <div class="card active" id="sec1">
   <div class="card-hdr">
     <div class="card-icon">👤</div>
     <div><h2>Section 1 — Personnel Information</h2><p>Select your name and confirm your assignment details.</p></div>
   </div>
   <div class="card-body">
-    <div class="alert alert-info"><span>ℹ️</span><div>All marked fields are required. Your ID and Division will auto-fill after selecting your name.</div></div>
-
+    <div class="alert alert-save"><span>💾</span><div>Your answers are <strong>automatically saved</strong> as you type. Close the browser anytime and return to continue.</div></div>
     <div class="frow">
       <div class="fg">
         <label for="f-date">Date <span class="req">*</span></label>
-        <input type="date" id="f-date">
+        <input type="date" id="f-date" oninput="autoSave()">
         <div class="err-msg" id="e-date">Please select a date.</div>
       </div>
       <div class="fg">
         <label for="f-daytype">Day Type <span class="req">*</span></label>
-        <select id="f-daytype">
+        <select id="f-daytype" onchange="autoSave()">
           <option value="">— Select —</option>
           <option>Regular Working Day</option>
           <option>Special Holiday</option>
@@ -198,15 +216,13 @@ textarea{min-height:88px;resize:vertical}
         <div class="err-msg" id="e-daytype">Please select day type.</div>
       </div>
     </div>
-
     <div class="fg">
-      <label for="f-name">Full Name <span class="req">*</span> <span class="hint">Type to search</span></label>
+      <label for="f-name">Full Name <span class="req">*</span></label>
       <select id="f-name" onchange="onNameSelect()">
         <option value="">— Select Your Name —</option>
       </select>
       <div class="err-msg" id="e-name">Please select your name.</div>
     </div>
-
     <div class="frow">
       <div class="fg">
         <label>ID Number</label>
@@ -217,28 +233,26 @@ textarea{min-height:88px;resize:vertical}
         <div class="info-box" id="d-div">Auto-fills after name selection</div>
       </div>
     </div>
-
     <div class="fg">
-      <label for="f-email">Email Address <span class="req">*</span> <span class="hint">Official email preferred</span></label>
-      <input type="email" id="f-email" placeholder="yourname@prc.gov.ph">
+      <label for="f-email">Email Address <span class="req">*</span> <span class="hint">Gmail or official email accepted</span></label>
+      <input type="email" id="f-email" placeholder="yourname@gmail.com or yourname@prc.gov.ph" oninput="autoSave()">
       <div class="err-msg" id="e-email">Please enter a valid email address.</div>
     </div>
-
-    <div class="btn-row">
+    <div class="btn-row-split">
+      <button class="btn btn-clear" onclick="confirmClear()">🗑 Clear All & Start Over</button>
       <button class="btn btn-primary" onclick="go(2)">Next: Time In &nbsp;→</button>
     </div>
   </div>
 </div>
 
-<!-- ── SECTION 2: TIME IN ─────────────────────────────────────────── -->
+<!-- SECTION 2 -->
 <div class="card" id="sec2">
   <div class="card-hdr">
     <div class="card-icon">🟢</div>
     <div><h2>Section 2 — Time In</h2><p>Record your start of shift and upload a photo as proof.</p></div>
   </div>
   <div class="card-body">
-    <div class="alert alert-warn"><span>📸</span><div>A clear selfie or workspace photo is required as proof of your Time In.</div></div>
-
+    <div class="alert alert-warn"><span>📸</span><div>A clear selfie or workspace photo is required. <strong>Photo is saved on this device</strong> — you can close and return.</div></div>
     <div class="frow">
       <div class="fg">
         <label for="f-timein">Time In <span class="req">*</span></label>
@@ -247,7 +261,7 @@ textarea{min-height:88px;resize:vertical}
       </div>
       <div class="fg">
         <label for="f-shift">Shift Schedule <span class="req">*</span></label>
-        <select id="f-shift">
+        <select id="f-shift" onchange="autoSave()">
           <option value="">— Select Shift —</option>
           <option>8:00 AM – 5:00 PM</option>
           <option>7:00 AM – 4:00 PM</option>
@@ -257,36 +271,36 @@ textarea{min-height:88px;resize:vertical}
         <div class="err-msg" id="e-shift">Please select your shift.</div>
       </div>
     </div>
-
     <div class="fg">
-      <label>Time In Photo <span class="req">*</span> <span class="hint">Clear selfie or workspace photo</span></label>
+      <label>Time In Photo <span class="req">*</span> <span class="hint">Saved automatically on this device</span></label>
       <div class="upload-area" id="ua-in">
         <input type="file" id="f-photoin" accept="image/*" onchange="handlePhoto('in',this)">
         <div class="upload-icon">📷</div>
         <div class="upload-txt"><strong>Tap to upload</strong> or drag photo here</div>
-        <div class="upload-sub">JPEG, PNG · Max 5MB · Must be clear and well-lit</div>
+        <div class="upload-sub">JPEG, PNG · Max 5MB · Saved on device automatically</div>
       </div>
       <div class="preview" id="prev-in">
         <img id="img-in" src="" alt="Time In Photo">
         <button class="rm" onclick="rmPhoto('in')">✕</button>
       </div>
-      <div class="upload-ok" id="ok-in">✅ Photo uploaded successfully</div>
+      <div class="upload-ok" id="ok-in">✅ Photo saved on this device</div>
       <div class="err-msg" id="e-photoin">Please upload your Time In photo.</div>
     </div>
-
     <div class="fg">
       <label for="f-rem1">Time In Remarks <span class="hint">Optional</span></label>
-      <textarea id="f-rem1" placeholder="Notes about your work setup, connectivity, or special arrangements..."></textarea>
+      <textarea id="f-rem1" placeholder="Notes about your work setup or connectivity..." oninput="autoSave()"></textarea>
     </div>
-
-    <div class="btn-row">
-      <button class="btn btn-secondary" onclick="go(1)">← Back</button>
-      <button class="btn btn-primary" onclick="go(3)">Next: Tasks &nbsp;→</button>
+    <div class="btn-row-split">
+      <button class="btn btn-save" onclick="manualSave()">💾 Save &amp; Exit Later</button>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-secondary" onclick="go(1)">← Back</button>
+        <button class="btn btn-primary" onclick="go(3)">Next: Tasks &nbsp;→</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ── SECTION 3: TASKS ───────────────────────────────────────────── -->
+<!-- SECTION 3 -->
 <div class="card" id="sec3">
   <div class="card-hdr">
     <div class="card-icon">✅</div>
@@ -294,48 +308,44 @@ textarea{min-height:88px;resize:vertical}
   </div>
   <div class="card-body">
     <div class="alert alert-info"><span>📋</span><div>Tasks shown are specific to your division: <strong id="task-div-lbl">—</strong></div></div>
-
     <div class="fg">
       <label>Tasks Accomplished <span class="req">*</span> <span class="hint">Check all that apply</span></label>
       <div class="task-grid" id="task-list">
         <div style="color:var(--g400);font-size:.84rem;font-style:italic;padding:12px">Complete Section 1 first to load your division tasks.</div>
       </div>
-      <div class="err-msg" id="e-tasks">Please select at least one task or describe in the field below.</div>
+      <div class="err-msg" id="e-tasks">Please select at least one task or describe below.</div>
     </div>
-
     <div class="div"></div>
-
     <div class="fg">
-      <label for="f-othertask">Additional Tasks <span class="hint">Optional — tasks not listed above</span></label>
-      <textarea id="f-othertask" placeholder="Describe any other tasks accomplished not listed above..."></textarea>
+      <label for="f-othertask">Additional Tasks <span class="hint">Optional</span></label>
+      <textarea id="f-othertask" placeholder="Describe any other tasks not listed above..." oninput="autoSave()"></textarea>
     </div>
-
     <div class="fg">
       <label for="f-output">Documents / Items Processed <span class="hint">Optional</span></label>
-      <input type="text" id="f-output" placeholder="e.g. 35 applications processed, 12 emails responded">
+      <input type="text" id="f-output" placeholder="e.g. 35 applications processed, 12 emails responded" oninput="autoSave()">
     </div>
-
-    <div class="btn-row">
-      <button class="btn btn-secondary" onclick="go(2)">← Back</button>
-      <button class="btn btn-primary" onclick="go(4)">Next: Time Out &nbsp;→</button>
+    <div class="btn-row-split">
+      <button class="btn btn-save" onclick="manualSave()">💾 Save &amp; Exit Later</button>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-secondary" onclick="go(2)">← Back</button>
+        <button class="btn btn-primary" onclick="go(4)">Next: Time Out &nbsp;→</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ── SECTION 4: TIME OUT ────────────────────────────────────────── -->
+<!-- SECTION 4 -->
 <div class="card" id="sec4">
   <div class="card-hdr">
     <div class="card-icon">🔴</div>
     <div><h2>Section 4 — Time Out</h2><p>Complete at the END of your shift. Upload a photo as proof.</p></div>
   </div>
   <div class="card-body">
-    <div class="alert alert-warn"><span>⏰</span><div>This section must be filled at the <strong>end of your shift</strong>. Do not complete this section early.</div></div>
-
+    <div class="alert alert-warn"><span>⏰</span><div>This section must be filled at the <strong>end of your shift only</strong>. Your earlier answers are already saved.</div></div>
     <div class="fg">
       <label>Recorded Time In</label>
       <div class="ts tin"><span class="ts-icon">🟢</span><div><div class="ts-lbl">Time In</div><div class="ts-val" id="d-timein">—</div></div></div>
     </div>
-
     <div class="frow">
       <div class="fg">
         <label for="f-timeout">Time Out <span class="req">*</span></label>
@@ -347,44 +357,43 @@ textarea{min-height:88px;resize:vertical}
         <div class="info-box" id="d-hours">Auto-computes after Time Out is entered</div>
       </div>
     </div>
-
     <div class="fg">
       <label>Time Out Photo <span class="req">*</span> <span class="hint">Clear selfie or workspace photo</span></label>
       <div class="upload-area" id="ua-out">
         <input type="file" id="f-photoout" accept="image/*" onchange="handlePhoto('out',this)">
         <div class="upload-icon">📷</div>
         <div class="upload-txt"><strong>Tap to upload</strong> or drag photo here</div>
-        <div class="upload-sub">JPEG, PNG · Max 5MB · Must be clear and well-lit</div>
+        <div class="upload-sub">JPEG, PNG · Max 5MB</div>
       </div>
       <div class="preview" id="prev-out">
         <img id="img-out" src="" alt="Time Out Photo">
         <button class="rm" onclick="rmPhoto('out')">✕</button>
       </div>
-      <div class="upload-ok" id="ok-out">✅ Photo uploaded successfully</div>
+      <div class="upload-ok" id="ok-out">✅ Photo saved on this device</div>
       <div class="err-msg" id="e-photoout">Please upload your Time Out photo.</div>
     </div>
-
     <div class="fg">
       <label for="f-rem2">End-of-Day Remarks <span class="hint">Optional</span></label>
-      <textarea id="f-rem2" placeholder="Pending tasks, concerns, or end-of-day notes..."></textarea>
+      <textarea id="f-rem2" placeholder="Pending tasks, concerns, or end-of-day notes..." oninput="autoSave()"></textarea>
     </div>
-
-    <div class="btn-row">
-      <button class="btn btn-secondary" onclick="go(3)">← Back</button>
-      <button class="btn btn-primary" onclick="go(5)">Review &amp; Submit &nbsp;→</button>
+    <div class="btn-row-split">
+      <button class="btn btn-save" onclick="manualSave()">💾 Save &amp; Exit Later</button>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-secondary" onclick="go(3)">← Back</button>
+        <button class="btn btn-primary" onclick="go(5)">Review &amp; Submit &nbsp;→</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ── SECTION 5: REVIEW & SUBMIT ────────────────────────────────── -->
+<!-- SECTION 5 -->
 <div class="card" id="sec5">
   <div class="card-hdr">
     <div class="card-icon">📝</div>
-    <div><h2>Section 5 — Review &amp; Submit</h2><p>Review your record carefully before final submission.</p></div>
+    <div><h2>Section 5 — Review &amp; Submit</h2><p>Review carefully before final submission.</p></div>
   </div>
   <div class="card-body">
     <div class="alert alert-warn"><span>⚠️</span><div>Once submitted, your record is saved to the official database and cannot be edited.</div></div>
-
     <div class="sum-card">
       <h3>👤 Personnel Information</h3>
       <div class="sum-row"><span class="sk">Date</span><span class="sv" id="sm-date">—</span></div>
@@ -394,7 +403,6 @@ textarea{min-height:88px;resize:vertical}
       <div class="sum-row"><span class="sk">Division / Section</span><span class="sv" id="sm-div">—</span></div>
       <div class="sum-row"><span class="sk">Email</span><span class="sv" id="sm-email">—</span></div>
     </div>
-
     <div class="sum-card">
       <h3>🕐 Attendance Record</h3>
       <div class="sum-row"><span class="sk">Shift</span><span class="sv" id="sm-shift">—</span></div>
@@ -404,33 +412,26 @@ textarea{min-height:88px;resize:vertical}
       <div class="sum-row"><span class="sk">Time In Photo</span><span class="sv" id="sm-pin">—</span></div>
       <div class="sum-row"><span class="sk">Time Out Photo</span><span class="sv" id="sm-pout">—</span></div>
     </div>
-
     <div class="sum-card">
       <h3>✅ Tasks Accomplished</h3>
       <div id="sm-tasks-wrap"><div style="color:var(--g400);font-size:.82rem;font-style:italic">No tasks selected</div></div>
       <div class="sum-row" style="margin-top:8px"><span class="sk">Additional</span><span class="sv" id="sm-other" style="text-align:left;max-width:340px">—</span></div>
       <div class="sum-row"><span class="sk">Items Processed</span><span class="sv" id="sm-output">—</span></div>
     </div>
-
     <div class="sum-card">
       <h3>📝 Remarks</h3>
       <div class="sum-row"><span class="sk">Time In Remarks</span><span class="sv" id="sm-rem1" style="text-align:left;max-width:340px">—</span></div>
       <div class="sum-row"><span class="sk">End-of-Day Remarks</span><span class="sv" id="sm-rem2" style="text-align:left;max-width:340px">—</span></div>
     </div>
-
-    <div class="alert alert-info"><span>🔒</span><div>By submitting, you certify that all information is true and accurate, and that you rendered service from your registered home address during the indicated hours.</div></div>
-
-    <!-- SCRIPT URL INPUT -->
-    <div class="fg" style="background:#fff8e7;border:1.5px solid var(--gold);border-radius:8px;padding:14px;margin-bottom:16px">
-      <label for="script-url" style="color:#7d4f00">⚙️ Apps Script Web App URL <span class="req">*</span> <span class="hint" style="color:#a07030">Paste your deployed script URL here — see instructions below</span></label>
-      <input type="text" id="script-url" placeholder="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec" style="background:#fff">
-      <div class="err-msg" id="e-scripturl">Please paste your Apps Script Web App URL to enable submission.</div>
-      <div style="font-size:.72rem;color:#a07030;margin-top:5px">💡 After deploying your Apps Script, paste the Web App URL above. This only needs to be set once.</div>
+    <div class="alert alert-info"><span>🔒</span><div>By submitting, you certify that all information is true and accurate and that you rendered service from your home address during the indicated hours.</div></div>
+    <div class="script-box">
+      <label for="script-url">⚙️ Apps Script Web App URL <span class="req">*</span> <span class="hint" style="color:#a07030">Paste once — saves automatically</span></label>
+      <input type="text" id="script-url" placeholder="https://script.google.com/macros/s/YOUR_ID/exec" style="background:#fff" oninput="autoSave()">
+      <div class="err-msg" id="e-scripturl">Please paste your Apps Script Web App URL.</div>
+      <div style="font-size:.72rem;color:#a07030;margin-top:5px">💡 This URL only needs to be entered once. It saves automatically.</div>
     </div>
-
-    <div id="submit-msg" class="submitting-msg">⏳ Submitting your record to Google Sheets... Please wait.</div>
-    <div id="submit-err" class="alert alert-error hidden"><span>❌</span><div id="submit-err-txt">Submission failed. Please check your Script URL and try again.</div></div>
-
+    <div id="submit-msg" style="display:none;text-align:center;padding:12px;background:#eef2fa;border-radius:7px;margin-top:12px;font-size:.84rem;color:var(--navy);font-weight:600">⏳ Submitting your record... Please wait.</div>
+    <div id="submit-err" class="alert alert-error hidden"><span>❌</span><div id="submit-err-txt">Submission failed. Check your Script URL and try again.</div></div>
     <div class="btn-row">
       <button class="btn btn-secondary" onclick="go(4)">← Back</button>
       <button class="btn btn-gold" id="submitBtn" onclick="submitForm()">
@@ -441,45 +442,52 @@ textarea{min-height:88px;resize:vertical}
   </div>
 </div>
 
-<!-- ── SUCCESS ────────────────────────────────────────────────────── -->
+<!-- SUCCESS -->
 <div class="card" id="sec-success">
   <div class="card-body success">
     <div class="s-icon">🎉</div>
-    <h2>Record Submitted!</h2>
+    <h2>Record Submitted Successfully!</h2>
     <p>Your WFH Daily Time Record has been saved to the official PRC-NCR database.</p>
-    <div class="ref" id="ref-num">REF-000000</div>
-    <p>A copy has been recorded in Google Sheets. Your supervisor has been notified.</p>
+    <div class="ref" id="ref-num">WFH-000000</div>
+    <p>Your supervisor has been notified. Your saved progress has been cleared.</p>
     <div style="margin-top:24px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
       <button class="btn btn-primary" onclick="window.print()">🖨️ &nbsp;Print Record</button>
-      <button class="btn btn-secondary" onclick="location.reload()">+ New Record</button>
+      <button class="btn btn-secondary" onclick="startFresh()">+ New Record</button>
     </div>
   </div>
 </div>
 
-</div><!-- /wrap -->
+</div>
 
 <div class="footer">
   <strong>Professional Regulation Commission – National Capital Region</strong><br>
-  WFH Daily Time Record System &nbsp;·&nbsp; Job Order Personnel &nbsp;·&nbsp; Official Government Record
+  WFH Daily Time Record &nbsp;·&nbsp; Job Order Personnel &nbsp;·&nbsp; Auto-Save Public Version
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // DATA
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 const PERSONNEL = [{"no":1,"division":"FAD- ICT","name":"Alvarez, Alvin John W.","id":"79387"},{"no":2,"division":"FAD- ICT","name":"Demeterio, Romer Casper C.","id":"94290"},{"no":3,"division":"FAD- HR","name":"Garcela, Rejina","id":"92191"},{"no":4,"division":"PIMRU","name":"Jop, Neliza Caye C.","id":"94295"},{"no":5,"division":"FAD- ICT","name":"Macato, Adrian Paul R.","id":"94252"},{"no":6,"division":"PIMRU","name":"Peñamora, Mark Angelo R.","id":"94531"},{"no":7,"division":"FAD- Procurement Section","name":"Quiambao, Angelo Joseph L.","id":"85912"},{"no":8,"division":"FAD- Accounting Section","name":"Regio, Francess C.","id":"91629"},{"no":9,"division":"FAD- Budget Section","name":"Rivera, Marieshanntal B.","id":"96231"},{"no":10,"division":"FAD- Cash and Disbursing Section","name":"San Pablo, Jemalene D.","id":"85913"},{"no":11,"division":"Finance and Administrative Division","name":"Vargas, Rovina Jeinn P.","id":"89398"},{"no":12,"division":"FAD- Procurement Section","name":"Verona, Alisa Mae B.","id":"94661"},{"no":13,"division":"FAD - Records Section","name":"Abad, Lizabeth E.","id":"74205"},{"no":14,"division":"FAD - Records Section","name":"Das, Pablito G. Jr.","id":"87280"},{"no":15,"division":"FAD - Records Section","name":"Deonila, Rudy Lito M.","id":"85914"},{"no":16,"division":"FAD - Records Section","name":"Ebit, Mark Gio D.","id":"85915"},{"no":17,"division":"Legal Division","name":"Maca-arig, Nordani D.","id":"87124"},{"no":18,"division":"Legal Division","name":"Empas, Joniel Jave Viola","id":"91598"},{"no":19,"division":"Legal Division","name":"Lacsa, Hanna Mae D.","id":"94291"},{"no":20,"division":"Legal Division","name":"Espiña, Kimberly B.","id":"87960"},{"no":21,"division":"Legal Division","name":"Gonzales, Angelica Faith I.","id":"96809"},{"no":22,"division":"Legal Division","name":"Unay, Shiela Mae A.","id":"89397"},{"no":23,"division":"Legal Division","name":"Aguilar, Vanessa L.","id":"88601"},{"no":24,"division":"Legal Division","name":"De Vera, Mark Ronald G.","id":"91452"},{"no":25,"division":"Legal Division","name":"Dones, Rodrigo G.","id":"92489"},{"no":26,"division":"LRD - Application","name":"Albajera, Maria Anna B.","id":"68563"},{"no":27,"division":"LRD - Application","name":"Binua, Khaleyla Katya E.","id":"87961"},{"no":28,"division":"LRD - Application","name":"Valenzuela, Renee Rouvenn F.","id":"96390"},{"no":29,"division":"LRD - Application","name":"Decena, Alexa Edgie A.","id":"82991"},{"no":30,"division":"LRD - Application","name":"Gelotin, Zyrine DS.","id":"85918"},{"no":31,"division":"LRD - Application","name":"Quilet, Jhazna April R.","id":"96217"},{"no":32,"division":"LRD - Application","name":"Bueno, Aerovill","id":"96459"},{"no":33,"division":"LRD - Application","name":"Mamaril, Aliana B.","id":"82990"},{"no":34,"division":"LRD - Application","name":"Maranan, Lael M.","id":"87107"},{"no":35,"division":"LRD - Application","name":"Orang, Almira M.","id":"82410"},{"no":36,"division":"LRD - Application","name":"Sadaran, Mark Erwyn C.","id":"85888"},{"no":37,"division":"LRD - Application","name":"Lancion, Irine L.","id":"94772"},{"no":38,"division":"LRD - Application","name":"De Guzman, Jerricko S.","id":"94780"},{"no":39,"division":"LRD - Application","name":"Largado, Mark Gil L.","id":"94779"},{"no":40,"division":"LRD - Application","name":"Zamora, Manolo A.","id":"N/A"},{"no":41,"division":"LRD - Application","name":"Padapat, Christine Mhay","id":"96537"},{"no":42,"division":"LRD - Registration","name":"Alata, Elden John P.","id":"82981"},{"no":43,"division":"LRD - Registration","name":"Albajera, Anthony B.","id":"85920"},{"no":44,"division":"LRD - Registration","name":"Arevalo, Jerico P.","id":"87480"},{"no":45,"division":"LRD - Registration","name":"Cunanan, Julie Pearl B.","id":"88151"},{"no":46,"division":"LRD - Registration","name":"Escaros, Arbe H.","id":"92151"},{"no":47,"division":"LRD - Registration","name":"Partido, Gemver","id":"87362"},{"no":48,"division":"LRD - Registration","name":"Lopez, Ian P.","id":"92153"},{"no":49,"division":"LRD - Registration","name":"Manalili, Lineth Andrea V.","id":"94546"},{"no":50,"division":"LRD - Registration","name":"Albain, Azzedine A.","id":"94284"},{"no":51,"division":"LRD - Registration","name":"Julio, Lady Lay C.","id":"87061"},{"no":52,"division":"LRD - Registration","name":"Meniano, Chickie R.","id":"86175"},{"no":53,"division":"LRD - Registration","name":"Novio, Vicente Jr. B.","id":"86110"},{"no":54,"division":"LRD - Registration","name":"Onofre, Sonny F.","id":"69223"},{"no":55,"division":"LRD - Registration","name":"Del Rosario, Erickson T.","id":"82414"},{"no":56,"division":"LRD - Registration","name":"Padernos, Jomar P.","id":"91600"},{"no":57,"division":"LRD - Registration","name":"Cordova, Wendel","id":"94644"},{"no":58,"division":"LRD - Registration","name":"Castaños, John Leo Bernil","id":"91632"},{"no":59,"division":"LRD - Registration","name":"Paguntalan, Deosean A.","id":"94781"},{"no":60,"division":"LRD - Registration","name":"Mendoza, Bernadette E.","id":"94859"},{"no":61,"division":"LRD - Registration","name":"Ocampo, Rommel R.","id":"94857"},{"no":62,"division":"LRD - Registration","name":"Lingao-lingao, Armie","id":"96539"},{"no":63,"division":"LRD - Registration","name":"Villapeña, Maria Karen Veluya","id":"91630"},{"no":64,"division":"Office of the Director","name":"Estanislao, Shelah Mhay L.","id":"88699"},{"no":65,"division":"Office of the Director","name":"Zabala, Danica N.","id":"87364"},{"no":66,"division":"Regulation Division","name":"Julia, Judell S.","id":"96438"},{"no":67,"division":"Regulation Division","name":"Bonitillo, Rain Heart","id":"94298"},{"no":68,"division":"Regulation Division","name":"Ecoben, Cherry Rose S.","id":"91368"},{"no":69,"division":"FAD - Records Section","name":"Saño, Brian B.","id":"82629"},{"no":70,"division":"FAD - Records Section","name":"Alojado, Jamie Renee V.","id":"94778"},{"no":71,"division":"COA","name":"Enriquez, Ciara Joy B.","id":"96218"}];
 
 const TASKS = {"Office of the Director":["Receiving, tagging, and responding to shipping-related queries submitted through official channels","Monitoring and answering email inquiries through the official GovMail account","Attending to public queries and concerns via the Official Facebook Page of PRC-NCR","Encoding and updating records in the CRMS","Processing and managing NCR shipping transactions","Tagging and routing incoming communications to appropriate personnel/units","Coordinating with internal units to facilitate timely responses","Relaying and forwarding communications to relevant offices","Supporting the Regional Director/OIC Director in operational requirements","Performing other related tasks as assigned"],"Finance and Administrative Division":["Receiving, monitoring, and managing incoming/outgoing communications via official email","Responding to administrative queries of internal divisions and external stakeholders","Maintaining and updating the FAD Chief's official calendar and schedules","Preparing and encoding administrative reports and consolidations for FAD Chief","Monitoring status of action items issued by the FAD Chief","Logging and routing official communications through document tracking system","Reviewing and consolidating reports from FAD sections prior to endorsement","Drafting and finalizing memoranda and official communications on behalf of FAD Chief","Encoding and updating the document monitoring log","Coordinating with all FAD sections for consolidation of required reports","Performing other secretariat and administrative duties as assigned"],"FAD- ICT":["Providing remote technical support to PRC-NCR personnel","Monitoring and maintaining PRC-NCR official online platforms and PRC Systems","Encoding and updating ICT-related records, inventory, and documentation","Responding to ICT-related queries through official email and online channels","Performing system monitoring, troubleshooting, and maintenance remotely","Preparing and processing ICT-related reports and technical documentation","Encoding and updating ICT inventory for hardware, software, and equipment","Processing and documenting technical support requests and resolutions","Coordinating with PRC Central Office ICT for system updates and maintenance","Performing other ICT-related duties as assigned"],"FAD- HR":["Maintaining and updating digital personnel records, service records, and 201 files","Processing and monitoring leave applications and attendance records","Preparing and encoding payroll-related data, personnel actions, and HR reports","Responding to HR-related queries through official email channels","Preparing HR documents (Certificates of Employment, Service Records, etc.)","Monitoring compliance with CSC rules and regulations","Processing leave applications and personnel actions through the online system","Drafting and processing HR-related issuances, memoranda, and advisories","Coordinating with CSC and PRC Central Office HR for personnel actions","Performing other HR-related duties as assigned"],"PIMRU":["Monitoring and responding to public inquiries via Official Facebook Page of PRC-NCR","Encoding, updating, and managing records in CRMS","Crafting write-ups, captions, and content for official Facebook page posts","Performing video editing for digital content on official social media platforms","Drafting, editing, and finalizing write-ups and digital content materials","Preparing and completing required GAD RTWG documents and reports","Coordinating with Office of the Regional Director for approval of social media content","Forwarding drafted write-ups and official statements for review and approval","Endorsing finalized digital content and video materials for official release","Performing other duties as assigned"],"FAD- Procurement Section":["Preparing and updating the Annual Procurement Plan (APP) and PPMP","Monitoring and encoding procurement data in the PhilGEPS system","Preparing Purchase Requests (PRs) and Requests for Quotation (RFQs)","Responding to procurement-related queries through official email channels","Monitoring ongoing procurement activities per RA 9184","Preparing and processing procurement documents (POs, Contracts, Notice of Awards)","Encoding and posting procurement opportunities in the PhilGEPS online portal","Processing and documenting canvass sheets, RFQs, and supplier quotations","Coordinating with BAC Secretariat, TWG, and approving authorities","Performing other procurement-related duties as assigned"],"FAD- Accounting Section":["Maintaining and updating financial books of accounts in eNGAS","Preparing and encoding Journal Entry Vouchers (JEVs) for all financial transactions","Reviewing and verifying disbursement vouchers, payrolls, and financial documents","Preparing financial statements and accounting reports for COA and PRC Central Office","Monitoring and reconciling accounts payable, receivable, and other financial accounts","Processing and documenting tax remittances and BIR reports","Coordinating with COA resident auditors for submission of financial reports","Forwarding processed financial documents and accounting reports to appropriate offices","Performing other accounting-related duties as assigned"],"FAD- Budget Section":["Monitoring and encoding budget utilization, allotments, and obligations in eBudget","Preparing and processing Obligation Request and Status (ORS) forms","Responding to budget-related queries through official email channels","Monitoring status of budget releases, allotments, and NCA from DBM/PRC Central Office","Preparing and finalizing monthly, quarterly, and annual budget utilization reports","Processing budget requests, realignments, and supplemental proposals","Preparing and updating the Statement of Allotments, Obligations, and Balances (SAOB)","Coordinating with DBM and PRC Central Office Budget Division for fund releases","Performing other budget-related duties as assigned"],"FAD- Cash and Disbursing Section":["Preparing and processing disbursement vouchers (DVs) for payment of salaries and allowances","Monitoring and recording cash advances, liquidations, and fund transfers","Encoding and updating cashbook records and financial transactions","Responding to cash and disbursement-related queries through official email channels","Preparing and submitting cash position reports to concerned offices","Processing payrolls and check/ADA issuances for review and approval","Processing fund transfers through Land Bank of the Philippines (LBP) online facility","Coordinating with Accounting and Budget Sections for processing of financial transactions","Performing other cash and disbursement-related duties as assigned"],"FAD - Records Section":["Receiving, logging, and routing incoming/outgoing communications through document tracking","Maintaining and updating the digital records management system","Responding to records-related queries through official email channels","Ensuring proper digital filing, archiving, and safekeeping of official records","Encoding and updating document logs and records for monitoring and reference","Preparing and processing certifications and authenticated copies of official records","Preparing records disposition schedules and inventory reports","Coordinating with National Archives of the Philippines (NAP) for compliance","Forwarding received communications to appropriate offices for action","Performing other records management duties as assigned"],"Legal Division":["Encoding and managing cases in LMIS (Legal Management Information System) and CRMS","Transcribing and typing stenographic notes","Answering email inquiries from the public and internal stakeholders","Drafting orders, show-cause orders, resolutions, and formal charges","Drafting transmittals/notices (Orders, Decisions, Summons, etc.)","Preparing case briefs, factual antecedents, and board procedures","Preparing investigation reports and entry of judgment/certificate of finality","Forwarding draft orders and documents to Boards and Office of the Director","Submitting documents to the Secretary of the PRBs for review and/or approval","Performing other legal-related duties as assigned"],"LRD - Application":["Assisting in online processing of applications for licensure examinations","Verifying completeness and authenticity of digitally submitted application documents","Conditionally approving applications through the online system","Encoding applicant information and examination data into the system","Digitally reproducing, organizing, and filing examination application forms","Assisting in digital preparation of required examination reports","Forwarding conditionally approved applications to Registration Section","Coordinating with relevant divisions for timely submission of examination reports","Performing other duties as assigned"],"LRD - Registration":["Assisting in online processing of renewal of various professions via PRC online platform","Reproducing, sorting, and filing registration forms and reports in digital format","Processing online renewal applications ensuring accuracy and completeness","Digitally organizing and filing registration forms and renewal reports","Coordinating with relevant divisions for preparation of registration-related reports","Endorsing digital registration records and reports to appropriate personnel","Performing other duties as assigned"],"Regulation Division":["Receiving, monitoring, and responding to email inquiries directed to the Regulation Division","Encoding, updating, and managing records in CRMS","Preparing and sending email blast notices regarding online filing of state board verification","Addressing and resolving public queries and concerns received through CRMS","Processing incoming/outgoing email communications and documenting inquiries","Encoding and updating relevant case and regulatory information in CRMS","Coordinating with internal divisions for accurate and consistent responses","Endorsing and forwarding unresolved queries to appropriate personnel for action","Performing other regulation-related duties as assigned"],"COA":["Encoding and updating financial reports and audit records in Excel and Word","Monitoring and tracking submissions of reports from PRC-NCR offices to COA","Proofreading audit reports, financial statements, and official documents","Formatting and organizing official COA documents per prescribed standards","Maintaining and updating monitoring sheets and tracking logs for document submissions","Preparing and updating monitoring spreadsheets and compliance trackers","Organizing and maintaining digital filing systems for audit-related records","Coordinating with FAD sections for timely receipt of financial documents","Forwarding encoded and formatted documents to COA Auditor-in-Charge","Performing other clerical and administrative duties as assigned"]};
 
-// ═══════════════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// STORAGE KEY
+// ═══════════════════════════════════════════════════════
+const SAVE_KEY = 'prc_wfh_autosave';
+const SCRIPT_KEY = 'prc_script_url_public';
+
 let currentStep = 1;
 let photoInB64 = null;
 let photoOutB64 = null;
+let saveTimeout = null;
 
+// ═══════════════════════════════════════════════════════
+// INIT — check for saved data on page load
+// ═══════════════════════════════════════════════════════
 window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+  // Populate name dropdown
   const sel = document.getElementById('f-name');
   PERSONNEL.forEach(p => {
     const o = document.createElement('option');
@@ -487,46 +495,251 @@ window.addEventListener('DOMContentLoaded', () => {
     o.textContent = p.name;
     sel.appendChild(o);
   });
-  // Restore saved script URL
-  const saved = localStorage.getItem('prc_script_url');
-  if (saved) document.getElementById('script-url').value = saved;
+
+  // Set today's date as default
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+
+  // Restore script URL
+  const savedScript = localStorage.getItem(SCRIPT_KEY);
+  if (savedScript) document.getElementById('script-url').value = savedScript;
+
+  // Check for saved form progress
+  const saved = localStorage.getItem(SAVE_KEY);
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      // Only show resume if saved today or data is recent
+      const savedDate = data.savedAt ? new Date(data.savedAt) : null;
+      const now = new Date();
+      const hoursDiff = savedDate ? (now - savedDate) / 3600000 : 999;
+
+      if (data.name && hoursDiff < 24) {
+        // Show resume banner
+        document.getElementById('resumeBanner').classList.remove('hidden');
+        document.getElementById('resumeInfo').textContent =
+          'Found saved answers for ' + data.name +
+          ' — Date: ' + (data.date || '?') +
+          ' — Last saved: ' + (savedDate ? savedDate.toLocaleTimeString('en-PH') : 'recently') +
+          '. Resume where you left off?';
+      } else if (hoursDiff >= 24) {
+        // Expired — clear it silently
+        localStorage.removeItem(SAVE_KEY);
+      }
+    } catch(e) {
+      localStorage.removeItem(SAVE_KEY);
+    }
+  }
 });
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// RESUME SAVED PROGRESS
+// ═══════════════════════════════════════════════════════
+function resumeProgress() {
+  const saved = localStorage.getItem(SAVE_KEY);
+  if (!saved) return;
+  try {
+    const data = JSON.parse(saved);
+    document.getElementById('resumeBanner').classList.add('hidden');
+
+    // Restore Section 1
+    if (data.date)    document.getElementById('f-date').value    = data.date;
+    if (data.dayType) document.getElementById('f-daytype').value = data.dayType;
+    if (data.nameNo) {
+      document.getElementById('f-name').value = data.nameNo;
+      onNameSelect(false); // restore without re-saving
+    }
+    if (data.email)   document.getElementById('f-email').value   = data.email;
+
+    // Restore Section 2
+    if (data.timeIn)  { document.getElementById('f-timein').value = data.timeIn; onTimeInChange(); }
+    if (data.shift)   document.getElementById('f-shift').value   = data.shift;
+    if (data.rem1)    document.getElementById('f-rem1').value     = data.rem1;
+    if (data.photoIn) {
+      photoInB64 = data.photoIn;
+      document.getElementById('img-in').src = data.photoIn;
+      document.getElementById('prev-in').style.display = 'block';
+      document.getElementById('ok-in').classList.add('show');
+      document.getElementById('ua-in').style.cssText = 'border-color:var(--green);background:#e8f5ee';
+    }
+
+    // Restore Section 3
+    if (data.otherTask) document.getElementById('f-othertask').value = data.otherTask;
+    if (data.output)    document.getElementById('f-output').value    = data.output;
+    if (data.tasks && data.tasks.length) {
+      // Tasks will be restored after task list is loaded — store for later
+      window._pendingTasks = data.tasks;
+    }
+
+    // Restore Section 4
+    if (data.timeOut) { document.getElementById('f-timeout').value = data.timeOut; calcHours(); }
+    if (data.rem2)    document.getElementById('f-rem2').value = data.rem2;
+    if (data.photoOut) {
+      photoOutB64 = data.photoOut;
+      document.getElementById('img-out').src = data.photoOut;
+      document.getElementById('prev-out').style.display = 'block';
+      document.getElementById('ok-out').classList.add('show');
+      document.getElementById('ua-out').style.cssText = 'border-color:var(--green);background:#e8f5ee';
+    }
+
+    // Script URL
+    if (data.scriptUrl) document.getElementById('script-url').value = data.scriptUrl;
+
+    // Go to saved step
+    const savedStep = data.currentStep || 1;
+    goToStep(savedStep);
+
+    showSaveIndicator();
+  } catch(e) {
+    console.error('Resume error:', e);
+    discardProgress();
+  }
+}
+
+function discardProgress() {
+  localStorage.removeItem(SAVE_KEY);
+  document.getElementById('resumeBanner').classList.add('hidden');
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+}
+
+// ═══════════════════════════════════════════════════════
+// AUTO-SAVE — runs 1 second after any input
+// ═══════════════════════════════════════════════════════
+function autoSave() {
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => {
+    saveNow();
+  }, 1000);
+}
+
+function manualSave() {
+  saveNow();
+  alert('✅ Progress saved! You can close the browser and come back anytime to continue.');
+}
+
+function saveNow() {
+  const no = document.getElementById('f-name').value;
+  const p = no ? PERSONNEL.find(x => x.no === parseInt(no)) : null;
+
+  // Collect checked tasks
+  const checkedTasks = [...document.querySelectorAll('#task-list input:checked')].map(c => c.value);
+
+  const data = {
+    savedAt:     new Date().toISOString(),
+    currentStep: currentStep,
+    // Section 1
+    date:        document.getElementById('f-date').value,
+    dayType:     document.getElementById('f-daytype').value,
+    nameNo:      no,
+    name:        p ? p.name : '',
+    email:       document.getElementById('f-email').value,
+    // Section 2
+    timeIn:      document.getElementById('f-timein').value,
+    shift:       document.getElementById('f-shift').value,
+    rem1:        document.getElementById('f-rem1').value,
+    photoIn:     photoInB64,
+    // Section 3
+    tasks:       checkedTasks,
+    otherTask:   document.getElementById('f-othertask').value,
+    output:      document.getElementById('f-output').value,
+    // Section 4
+    timeOut:     document.getElementById('f-timeout').value,
+    rem2:        document.getElementById('f-rem2').value,
+    photoOut:    photoOutB64,
+    // Script
+    scriptUrl:   document.getElementById('script-url').value,
+  };
+
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+    localStorage.setItem(SCRIPT_KEY, data.scriptUrl || '');
+    showSaveIndicator();
+  } catch(e) {
+    // Storage full — likely due to large photos
+    // Save without photos
+    data.photoIn = data.photoIn ? '[photo saved separately]' : null;
+    data.photoOut = data.photoOut ? '[photo saved separately]' : null;
+    // Save photos separately with smaller keys
+    if (photoInB64)  try { localStorage.setItem('prc_photo_in',  photoInB64);  } catch(e2) {}
+    if (photoOutB64) try { localStorage.setItem('prc_photo_out', photoOutB64); } catch(e2) {}
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); } catch(e3) {}
+    showSaveIndicator();
+  }
+}
+
+function showSaveIndicator() {
+  const el = document.getElementById('saveIndicator');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+function confirmClear() {
+  if (confirm('Are you sure you want to clear all your answers and start over?')) {
+    localStorage.removeItem(SAVE_KEY);
+    localStorage.removeItem('prc_photo_in');
+    localStorage.removeItem('prc_photo_out');
+    location.reload();
+  }
+}
+
+function startFresh() {
+  localStorage.removeItem(SAVE_KEY);
+  localStorage.removeItem('prc_photo_in');
+  localStorage.removeItem('prc_photo_out');
+  location.reload();
+}
+
+// ═══════════════════════════════════════════════════════
 // NAME SELECT
-// ═══════════════════════════════════════════════════════════════
-function onNameSelect() {
+// ═══════════════════════════════════════════════════════
+function onNameSelect(doSave = true) {
   const no = parseInt(document.getElementById('f-name').value);
   const p = PERSONNEL.find(x => x.no === no);
   if (!p) return;
-  const idEl = document.getElementById('d-id');
-  const divEl = document.getElementById('d-div');
-  idEl.className = 'info-box filled'; idEl.textContent = p.id;
-  divEl.className = 'info-box filled'; divEl.textContent = p.division;
+  document.getElementById('d-id').className  = 'info-box filled';
+  document.getElementById('d-id').textContent = p.id;
+  document.getElementById('d-div').className  = 'info-box filled';
+  document.getElementById('d-div').textContent = p.division;
   loadTasks(p.division);
+  if (doSave) autoSave();
 }
 
 function loadTasks(division) {
   document.getElementById('task-div-lbl').textContent = division;
   const container = document.getElementById('task-list');
   container.innerHTML = '';
-  const taskKey = Object.keys(TASKS).find(k => k.trim() === division.trim());
-  const list = taskKey ? TASKS[taskKey] : null;
+  const key = Object.keys(TASKS).find(k => k.trim() === division.trim());
+  const list = key ? TASKS[key] : null;
   if (!list || !list.length) {
-    container.innerHTML = '<div style="color:var(--g400);font-size:.82rem;font-style:italic;padding:10px">No predefined tasks for this division. Use the Additional Tasks field.</div>';
+    container.innerHTML = '<div style="color:var(--g400);font-size:.82rem;font-style:italic;padding:10px">No predefined tasks. Use Additional Tasks field.</div>';
     return;
   }
-  list.forEach((task, i) => {
+  list.forEach(task => {
     const lbl = document.createElement('label');
     lbl.className = 'task-cb';
-    lbl.innerHTML = `<input type="checkbox" value="${task.replace(/"/g,'&quot;')}" onchange="this.parentElement.classList.toggle('chk',this.checked)"><span>${task}</span>`;
+    lbl.innerHTML = `<input type="checkbox" value="${task.replace(/"/g,'&quot;')}" onchange="taskChanged(this)"><span>${task}</span>`;
     container.appendChild(lbl);
   });
+
+  // Restore pending checked tasks (from resume)
+  if (window._pendingTasks && window._pendingTasks.length) {
+    document.querySelectorAll('#task-list input[type=checkbox]').forEach(cb => {
+      if (window._pendingTasks.includes(cb.value)) {
+        cb.checked = true;
+        cb.parentElement.classList.add('chk');
+      }
+    });
+    window._pendingTasks = null;
+  }
 }
 
-// ═══════════════════════════════════════════════════════════════
+function taskChanged(cb) {
+  cb.parentElement.classList.toggle('chk', cb.checked);
+  autoSave();
+}
+
+// ═══════════════════════════════════════════════════════
 // PHOTOS
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function handlePhoto(type, input) {
   const file = input.files[0];
   if (!file) return;
@@ -534,29 +747,56 @@ function handlePhoto(type, input) {
   const reader = new FileReader();
   reader.onload = e => {
     const b64 = e.target.result;
-    if (type === 'in') { photoInB64 = b64; document.getElementById('img-in').src = b64; document.getElementById('prev-in').style.display='block'; document.getElementById('ok-in').classList.add('show'); document.getElementById('ua-in').style.borderColor='var(--green)'; document.getElementById('ua-in').style.background='#e8f5ee'; }
-    else { photoOutB64 = b64; document.getElementById('img-out').src = b64; document.getElementById('prev-out').style.display='block'; document.getElementById('ok-out').classList.add('show'); document.getElementById('ua-out').style.borderColor='var(--green)'; document.getElementById('ua-out').style.background='#e8f5ee'; }
+    if (type === 'in') {
+      photoInB64 = b64;
+      document.getElementById('img-in').src = b64;
+      document.getElementById('prev-in').style.display = 'block';
+      document.getElementById('ok-in').classList.add('show');
+      document.getElementById('ua-in').style.cssText = 'border-color:var(--green);background:#e8f5ee';
+    } else {
+      photoOutB64 = b64;
+      document.getElementById('img-out').src = b64;
+      document.getElementById('prev-out').style.display = 'block';
+      document.getElementById('ok-out').classList.add('show');
+      document.getElementById('ua-out').style.cssText = 'border-color:var(--green);background:#e8f5ee';
+    }
+    autoSave();
   };
   reader.readAsDataURL(file);
 }
 
 function rmPhoto(type) {
-  if (type==='in') { photoInB64=null; document.getElementById('f-photoin').value=''; document.getElementById('prev-in').style.display='none'; document.getElementById('ok-in').classList.remove('show'); document.getElementById('ua-in').style.borderColor=''; document.getElementById('ua-in').style.background=''; }
-  else { photoOutB64=null; document.getElementById('f-photoout').value=''; document.getElementById('prev-out').style.display='none'; document.getElementById('ok-out').classList.remove('show'); document.getElementById('ua-out').style.borderColor=''; document.getElementById('ua-out').style.background=''; }
+  if (type === 'in') {
+    photoInB64 = null;
+    document.getElementById('f-photoin').value = '';
+    document.getElementById('prev-in').style.display = 'none';
+    document.getElementById('ok-in').classList.remove('show');
+    document.getElementById('ua-in').style.cssText = '';
+    localStorage.removeItem('prc_photo_in');
+  } else {
+    photoOutB64 = null;
+    document.getElementById('f-photoout').value = '';
+    document.getElementById('prev-out').style.display = 'none';
+    document.getElementById('ok-out').classList.remove('show');
+    document.getElementById('ua-out').style.cssText = '';
+    localStorage.removeItem('prc_photo_out');
+  }
+  autoSave();
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // TIME UTILS
-// ═══════════════════════════════════════════════════════════════
-function fmtTime(val) {
-  if (!val) return '—';
-  const [h,m] = val.split(':').map(Number);
+// ═══════════════════════════════════════════════════════
+function fmtTime(v) {
+  if (!v) return '—';
+  const [h, m] = v.split(':').map(Number);
   return `${h%12||12}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`;
 }
 
 function onTimeInChange() {
   document.getElementById('d-timein').textContent = fmtTime(document.getElementById('f-timein').value);
   calcHours();
+  autoSave();
 }
 
 function calcHours() {
@@ -566,98 +806,105 @@ function calcHours() {
   if (tin && tout) {
     const [h1,m1] = tin.split(':').map(Number);
     const [h2,m2] = tout.split(':').map(Number);
-    let mins = (h2*60+m2)-(h1*60+m1);
-    if (mins<0) mins+=1440;
-    const h = Math.floor(mins/60), m = mins%60;
-    el.className='info-box filled';
-    el.textContent = `${h}h ${m}m  (${(mins/60).toFixed(2)} hours)`;
+    let mins = (h2*60+m2) - (h1*60+m1);
+    if (mins < 0) mins += 1440;
+    el.className = 'info-box filled';
+    el.textContent = `${Math.floor(mins/60)}h ${mins%60}m  (${(mins/60).toFixed(2)} hours)`;
   } else {
-    el.className='info-box';
-    el.textContent='Auto-computes after Time Out is entered';
+    el.className = 'info-box';
+    el.textContent = 'Auto-computes after Time Out is entered';
   }
+  autoSave();
 }
 
-// ═══════════════════════════════════════════════════════════════
-// NAVIGATION & VALIDATION
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
 function go(step) {
   if (step > currentStep && !validate(currentStep)) return;
   if (step === 5) buildSummary();
-  document.getElementById('sec'+currentStep).classList.remove('active');
-  document.getElementById('sec'+step).classList.add('active');
-  for (let i=1;i<=5;i++) {
-    const el=document.getElementById('s'+i);
-    el.classList.remove('active','done');
-    if(i<step) el.classList.add('done');
-    else if(i===step) el.classList.add('active');
-  }
-  currentStep=step;
-  document.getElementById('pbar').style.width=(step/5*100)+'%';
-  document.getElementById('plabel').textContent=`Step ${step} of 5`;
-  window.scrollTo({top:0,behavior:'smooth'});
+  saveNow(); // always save when navigating
+  goToStep(step);
 }
 
-function validate(step) {
-  let ok=true;
-  const se=(id)=>{const e=document.getElementById('e-'+id);if(e)e.classList.add('show');const f=document.getElementById('f-'+id);if(f)f.classList.add('ferr');};
-  const he=(id)=>{const e=document.getElementById('e-'+id);if(e)e.classList.remove('show');const f=document.getElementById('f-'+id);if(f)f.classList.remove('ferr');};
+function goToStep(step) {
+  document.getElementById('sec' + currentStep).classList.remove('active');
+  document.getElementById('sec' + step).classList.add('active');
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('s' + i);
+    el.classList.remove('active', 'done');
+    if (i < step) el.classList.add('done');
+    else if (i === step) el.classList.add('active');
+  }
+  currentStep = step;
+  document.getElementById('pbar').style.width = (step / 5 * 100) + '%';
+  document.getElementById('plabel').textContent = `Step ${step} of 5`;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-  if(step===1){
-    if(!document.getElementById('f-date').value){se('date');ok=false;}else he('date');
-    if(!document.getElementById('f-daytype').value){se('daytype');ok=false;}else he('daytype');
-    if(!document.getElementById('f-name').value){se('name');ok=false;}else he('name');
-    const em=document.getElementById('f-email').value;
-    if(!em||!/\S+@\S+\.\S+/.test(em)){se('email');ok=false;}else he('email');
+// ═══════════════════════════════════════════════════════
+// VALIDATION
+// ═══════════════════════════════════════════════════════
+function validate(step) {
+  let ok = true;
+  const se = id => { const e=document.getElementById('e-'+id); if(e) e.classList.add('show'); const f=document.getElementById('f-'+id); if(f) f.classList.add('ferr'); };
+  const he = id => { const e=document.getElementById('e-'+id); if(e) e.classList.remove('show'); const f=document.getElementById('f-'+id); if(f) f.classList.remove('ferr'); };
+
+  if (step === 1) {
+    if (!document.getElementById('f-date').value)    { se('date');    ok=false; } else he('date');
+    if (!document.getElementById('f-daytype').value) { se('daytype'); ok=false; } else he('daytype');
+    if (!document.getElementById('f-name').value)    { se('name');    ok=false; } else he('name');
+    const em = document.getElementById('f-email').value;
+    if (!em || !em.includes('@')) { se('email'); ok=false; } else he('email');
   }
-  if(step===2){
-    if(!document.getElementById('f-timein').value){se('timein');ok=false;}else he('timein');
-    if(!document.getElementById('f-shift').value){se('shift');ok=false;}else he('shift');
-    if(!photoInB64){se('photoin');ok=false;}else he('photoin');
+  if (step === 2) {
+    if (!document.getElementById('f-timein').value) { se('timein'); ok=false; } else he('timein');
+    if (!document.getElementById('f-shift').value)  { se('shift');  ok=false; } else he('shift');
+    if (!photoInB64) { se('photoin'); ok=false; } else he('photoin');
   }
-  if(step===3){
-    const chk=[...document.querySelectorAll('#task-list input:checked')];
-    const other=document.getElementById('f-othertask').value.trim();
-    if(chk.length===0&&!other){se('tasks');ok=false;}else he('tasks');
+  if (step === 3) {
+    const chk = [...document.querySelectorAll('#task-list input:checked')];
+    if (chk.length === 0 && !document.getElementById('f-othertask').value.trim()) { se('tasks'); ok=false; } else he('tasks');
   }
-  if(step===4){
-    if(!document.getElementById('f-timeout').value){se('timeout');ok=false;}else he('timeout');
-    if(!photoOutB64){se('photoout');ok=false;}else he('photoout');
+  if (step === 4) {
+    if (!document.getElementById('f-timeout').value) { se('timeout');  ok=false; } else he('timeout');
+    if (!photoOutB64) { se('photoout'); ok=false; } else he('photoout');
   }
   return ok;
 }
 
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 // SUMMARY
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
 function buildSummary() {
-  const no=parseInt(document.getElementById('f-name').value);
-  const p=PERSONNEL.find(x=>x.no===no)||{};
-  const dv=document.getElementById('f-date').value;
-  const ds=dv?new Date(dv+'T00:00:00').toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric'}):'—';
-  document.getElementById('sm-date').textContent=ds;
-  document.getElementById('sm-daytype').textContent=document.getElementById('f-daytype').value||'—';
-  document.getElementById('sm-name').textContent=p.name||'—';
-  document.getElementById('sm-id').textContent=p.id||'—';
-  document.getElementById('sm-div').textContent=p.division||'—';
-  document.getElementById('sm-email').textContent=document.getElementById('f-email').value||'—';
-  document.getElementById('sm-shift').textContent=document.getElementById('f-shift').value||'—';
-  document.getElementById('sm-tin').textContent=fmtTime(document.getElementById('f-timein').value);
-  document.getElementById('sm-tout').textContent=fmtTime(document.getElementById('f-timeout').value);
-  document.getElementById('sm-hrs').textContent=document.getElementById('d-hours').textContent;
-  document.getElementById('sm-pin').textContent=photoInB64?'✅ Uploaded':'❌ Missing';
-  document.getElementById('sm-pout').textContent=photoOutB64?'✅ Uploaded':'❌ Missing';
-  const chk=[...document.querySelectorAll('#task-list input:checked')];
-  const wrap=document.getElementById('sm-tasks-wrap');
-  wrap.innerHTML=chk.length?chk.map(c=>`<span class="task-tag">${c.value}</span>`).join(''):'<div style="color:var(--g400);font-size:.82rem;font-style:italic">None selected</div>';
-  document.getElementById('sm-other').textContent=document.getElementById('f-othertask').value||'—';
-  document.getElementById('sm-output').textContent=document.getElementById('f-output').value||'—';
-  document.getElementById('sm-rem1').textContent=document.getElementById('f-rem1').value||'—';
-  document.getElementById('sm-rem2').textContent=document.getElementById('f-rem2').value||'—';
+  const no = parseInt(document.getElementById('f-name').value);
+  const p = PERSONNEL.find(x => x.no === no) || {};
+  const dv = document.getElementById('f-date').value;
+  const ds = dv ? new Date(dv+'T00:00:00').toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) : '—';
+  document.getElementById('sm-date').textContent    = ds;
+  document.getElementById('sm-daytype').textContent = document.getElementById('f-daytype').value || '—';
+  document.getElementById('sm-name').textContent    = p.name || '—';
+  document.getElementById('sm-id').textContent      = p.id || '—';
+  document.getElementById('sm-div').textContent     = p.division || '—';
+  document.getElementById('sm-email').textContent   = document.getElementById('f-email').value || '—';
+  document.getElementById('sm-shift').textContent   = document.getElementById('f-shift').value || '—';
+  document.getElementById('sm-tin').textContent     = fmtTime(document.getElementById('f-timein').value);
+  document.getElementById('sm-tout').textContent    = fmtTime(document.getElementById('f-timeout').value);
+  document.getElementById('sm-hrs').textContent     = document.getElementById('d-hours').textContent;
+  document.getElementById('sm-pin').textContent     = photoInB64  ? '✅ Uploaded' : '❌ Missing';
+  document.getElementById('sm-pout').textContent    = photoOutB64 ? '✅ Uploaded' : '❌ Missing';
+  const chk = [...document.querySelectorAll('#task-list input:checked')];
+  const wrap = document.getElementById('sm-tasks-wrap');
+  wrap.innerHTML = chk.length ? chk.map(c=>`<span class="task-tag">${c.value}</span>`).join('') : '<div style="color:var(--g400);font-size:.82rem;font-style:italic">None selected</div>';
+  document.getElementById('sm-other').textContent  = document.getElementById('f-othertask').value || '—';
+  document.getElementById('sm-output').textContent = document.getElementById('f-output').value || '—';
+  document.getElementById('sm-rem1').textContent   = document.getElementById('f-rem1').value || '—';
+  document.getElementById('sm-rem2').textContent   = document.getElementById('f-rem2').value || '—';
 }
 
-// ═══════════════════════════════════════════════════════════════
-// SUBMIT TO GOOGLE SHEETS VIA APPS SCRIPT
-// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════
+// SUBMIT
+// ═══════════════════════════════════════════════════════
 async function submitForm() {
   const scriptUrl = document.getElementById('script-url').value.trim();
   if (!scriptUrl || !scriptUrl.startsWith('https://script.google.com')) {
@@ -665,34 +912,34 @@ async function submitForm() {
     return;
   }
   document.getElementById('e-scripturl').classList.remove('show');
-  localStorage.setItem('prc_script_url', scriptUrl);
+  localStorage.setItem(SCRIPT_KEY, scriptUrl);
 
-  const no=parseInt(document.getElementById('f-name').value);
-  const p=PERSONNEL.find(x=>x.no===no)||{};
-  const chk=[...document.querySelectorAll('#task-list input:checked')].map(c=>c.value);
+  const no = parseInt(document.getElementById('f-name').value);
+  const p = PERSONNEL.find(x => x.no === no) || {};
+  const chk = [...document.querySelectorAll('#task-list input:checked')].map(c => c.value);
 
   const payload = {
-    timestamp:    new Date().toISOString(),
-    date:         document.getElementById('f-date').value,
-    dayType:      document.getElementById('f-daytype').value,
-    name:         p.name||'',
-    idNumber:     p.id||'',
-    division:     p.division||'',
-    email:        document.getElementById('f-email').value,
-    shift:        document.getElementById('f-shift').value,
-    timeIn:       document.getElementById('f-timein').value,
-    timeInRemarks:document.getElementById('f-rem1').value,
+    timestamp:         new Date().toISOString(),
+    date:              document.getElementById('f-date').value,
+    dayType:           document.getElementById('f-daytype').value,
+    name:              p.name || '',
+    idNumber:          p.id || '',
+    division:          p.division || '',
+    email:             document.getElementById('f-email').value,
+    shift:             document.getElementById('f-shift').value,
+    timeIn:            document.getElementById('f-timein').value,
+    timeInRemarks:     document.getElementById('f-rem1').value,
     tasksAccomplished: chk.join(' | '),
     additionalTasks:   document.getElementById('f-othertask').value,
     itemsProcessed:    document.getElementById('f-output').value,
-    timeOut:      document.getElementById('f-timeout').value,
-    totalHours:   document.getElementById('d-hours').textContent,
-    timeOutRemarks:document.getElementById('f-rem2').value,
-    photoTimeIn:  photoInB64 ? 'Photo Uploaded' : 'Not Uploaded',
-    photoTimeOut: photoOutB64 ? 'Photo Uploaded' : 'Not Uploaded',
+    timeOut:           document.getElementById('f-timeout').value,
+    totalHours:        document.getElementById('d-hours').textContent,
+    timeOutRemarks:    document.getElementById('f-rem2').value,
+    photoTimeIn:       photoInB64  ? 'Photo Uploaded' : 'Not Uploaded',
+    photoTimeOut:      photoOutB64 ? 'Photo Uploaded' : 'Not Uploaded',
+    source:            'PUBLIC-AUTOSAVE-VERSION'
   };
 
-  // UI: loading state
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   document.getElementById('submit-label').textContent = 'Submitting...';
@@ -707,27 +954,27 @@ async function submitForm() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    // no-cors means we can't read the response — assume success
-    showSuccess();
-  } catch (err) {
+
+    // Clear saved data after successful submission
+    localStorage.removeItem(SAVE_KEY);
+    localStorage.removeItem('prc_photo_in');
+    localStorage.removeItem('prc_photo_out');
+
+    document.getElementById('sec5').classList.remove('active');
+    document.getElementById('sec-success').classList.add('active');
+    document.getElementById('stepsEl').style.display = 'none';
+    document.querySelector('.pbar').style.display = 'none';
+    document.getElementById('plabel').style.display = 'none';
+    document.getElementById('ref-num').textContent = 'WFH-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random()*999999)).padStart(6,'0');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch(err) {
     btn.disabled = false;
     document.getElementById('submit-label').textContent = '✅  Submit WFH Record';
     document.getElementById('submit-spinner').style.display = 'none';
     document.getElementById('submit-msg').style.display = 'none';
     document.getElementById('submit-err').classList.remove('hidden');
-    document.getElementById('submit-err-txt').textContent = 'Network error: ' + err.message + '. Check your Script URL and internet connection.';
+    document.getElementById('submit-err-txt').textContent = 'Error: ' + err.message;
   }
-}
-
-function showSuccess() {
-  document.getElementById('sec5').classList.remove('active');
-  document.getElementById('sec-success').classList.add('active');
-  document.getElementById('stepsEl').style.display='none';
-  document.querySelector('.pbar').style.display='none';
-  document.getElementById('plabel').style.display='none';
-  const ref='WFH-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*999999)).padStart(6,'0');
-  document.getElementById('ref-num').textContent=ref;
-  window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
 </body>
