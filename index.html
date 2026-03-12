@@ -582,11 +582,11 @@ function buildSummary() {
 async function submitForm() {
   const no=parseInt(document.getElementById('f-name').value); const p=PERSONNEL.find(x=>x.no===no)||{};
   const chk=[...document.querySelectorAll('#task-list input:checked')].map(c=>c.value);
-  const payload={timestamp:new Date().toISOString(),date:document.getElementById('f-date').value,dayType:document.getElementById('f-daytype').value,name:p.name||'',idNumber:p.id||'',division:p.division||'',email:document.getElementById('f-email').value,shift:document.getElementById('f-shift').value,timeIn:document.getElementById('f-timein').value,timeInRemarks:document.getElementById('f-rem1').value,tasksAccomplished:chk.join(' | '),additionalTasks:document.getElementById('f-othertask').value,itemsProcessed:document.getElementById('f-output').value,timeOut:document.getElementById('f-timeout').value,totalHours:document.getElementById('d-hours').textContent,timeOutRemarks:document.getElementById('f-rem2').value,photoTimeIn:photoInB64?'Photo Uploaded':'Not Uploaded',photoTimeOut:photoOutB64?'Photo Uploaded':'Not Uploaded',source:'PUBLIC-AUTOSAVE'};
+  const payload={timestamp:new Date().toISOString(),date:document.getElementById('f-date').value,dayType:document.getElementById('f-daytype').value,name:p.name||'',idNumber:p.id||'',division:p.division||'',email:document.getElementById('f-email').value,shift:document.getElementById('f-shift').value,timeIn:document.getElementById('f-timein').value,timeInRemarks:document.getElementById('f-rem1').value,tasksAccomplished:chk.join(' | '),additionalTasks:document.getElementById('f-othertask').value,itemsProcessed:document.getElementById('f-output').value,timeOut:document.getElementById('f-timeout').value,totalHours:document.getElementById('d-hours').textContent,timeOutRemarks:document.getElementById('f-rem2').value,photoTimeIn:photoInB64?'Photo Uploaded':'Not Uploaded',photoTimeOut:photoOutB64?'Photo Uploaded':'Not Uploaded',photoTimeInData:photoInB64||null,photoTimeOutData:photoOutB64||null,source:'PUBLIC-AUTOSAVE-v2'};
   const btn=document.getElementById('submitBtn'); btn.disabled=true;
   document.getElementById('submit-label').textContent='Submitting...';
   document.getElementById('submit-spinner').style.display='block';
-  document.getElementById('submit-msg').style.display='block';
+  document.getElementById('submit-msg').style.display='block';document.getElementById('submit-msg').textContent='⏳ Uploading photos and submitting your record... Please wait. Do not close this page.';
   document.getElementById('submit-err').classList.add('hidden');
   try {
     await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
