@@ -31,6 +31,8 @@ body{font-family:'Inter',sans-serif;background:#eef2f7;color:var(--g800);min-hei
 .stp.active .stp-n{background:var(--navy);color:#fff}
 .stp.done .stp-n{background:var(--green);color:#fff}
 .stp-l{font-size:.65rem;color:var(--g400);text-align:center;font-weight:500}
+.stp.done{cursor:pointer}.stp.done:hover .stp-n{background:#145c32;transform:scale(1.1)}
+.stp.done:hover .stp-l{color:#145c32}
 .stp.active .stp-l{color:var(--navy);font-weight:700}
 .stp.done .stp-l{color:var(--green)}
 .pbar{height:4px;background:var(--g200);border-radius:4px;overflow:hidden;margin-bottom:4px}
@@ -104,6 +106,8 @@ textarea{min-height:88px;resize:vertical}
 .btn-gold:disabled{background:var(--g200);color:var(--g400);cursor:not-allowed;transform:none;box-shadow:none}
 .btn-save{background:#e8f5ee;color:var(--green);border:1.5px solid #a8d5b5;font-size:.78rem;padding:8px 16px}
 .btn-save:hover{background:#d0eedd}
+.btn-jump{background:rgba(201,168,76,.25);color:var(--gold);border:1px solid var(--gold);font-size:.72rem;padding:5px 12px;border-radius:20px;cursor:pointer;font-weight:700;transition:var(--tr)}
+.btn-jump:hover{background:var(--gold);color:var(--navy)}
 .btn-clear{background:#fdf0f0;color:var(--red);border:1.5px solid #f5c0c0;font-size:.78rem;padding:8px 16px}
 .btn-clear:hover{background:#fde0e0}
 .div{height:1px;background:var(--g200);margin:18px 0}
@@ -155,11 +159,11 @@ textarea{min-height:88px;resize:vertical}
 
 <div class="prog-wrap">
   <div class="steps" id="stepsEl">
-    <div class="stp active" id="s1"><div class="stp-n">1</div><div class="stp-l">Info</div></div>
-    <div class="stp" id="s2"><div class="stp-n">2</div><div class="stp-l">Time In</div></div>
-    <div class="stp" id="s3"><div class="stp-n">3</div><div class="stp-l">Tasks</div></div>
-    <div class="stp" id="s4"><div class="stp-n">4</div><div class="stp-l">Time Out</div></div>
-    <div class="stp" id="s5"><div class="stp-n">5</div><div class="stp-l">Submit</div></div>
+    <div class="stp active" id="s1" onclick="jumpTo(1)" title="Go to Section 1"><div class="stp-n">1</div><div class="stp-l">Info</div></div>
+    <div class="stp" id="s2" onclick="jumpTo(2)" title="Go to Section 2"><div class="stp-n">2</div><div class="stp-l">Time In</div></div>
+    <div class="stp" id="s3" onclick="jumpTo(3)" title="Go to Section 3"><div class="stp-n">3</div><div class="stp-l">Tasks</div></div>
+    <div class="stp" id="s4" onclick="jumpTo(4)" title="Go to Section 4"><div class="stp-n">4</div><div class="stp-l">Time Out</div></div>
+    <div class="stp" id="s5" onclick="jumpTo(5)" title="Review & Submit"><div class="stp-n">5</div><div class="stp-l">Submit</div></div>
   </div>
   <div class="pbar"><div class="pbar-fill" id="pbar"></div></div>
   <div class="plabel" id="plabel">Step 1 of 5</div>
@@ -171,6 +175,7 @@ textarea{min-height:88px;resize:vertical}
   <div class="rb-text">
     <h3>📂 Saved Progress Found!</h3>
     <p id="resumeInfo">You have unfinished answers. Resume where you left off?</p>
+    <div id="jumpBtns" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px"></div>
   </div>
   <div class="rb-btns">
     <button class="btn-resume" onclick="resumeProgress()">▶ Resume Progress</button>
@@ -262,8 +267,24 @@ textarea{min-height:88px;resize:vertical}
       <label for="f-rem1">Time In Remarks <span class="hint">Optional</span></label>
       <textarea id="f-rem1" placeholder="Notes about your work setup or connectivity..." oninput="autoSave()"></textarea>
     </div>
-    <div class="btn-row-split">
-      <button class="btn btn-save" onclick="manualSave()">💾 Save &amp; Exit Later</button>
+    <div id="timein-submit-box" style="background:linear-gradient(135deg,#e8f5ee,#f0fff4);border:2px solid #a8d5b5;border-radius:9px;padding:16px 18px;margin-top:18px">
+      <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+        <span style="font-size:1.3rem">&#128228;</span>
+        <div>
+          <div style="font-size:.84rem;font-weight:700;color:var(--green)">Submit Time In &amp; Exit</div>
+          <div style="font-size:.72rem;color:var(--g600);margin-top:1px">Records your Time In to Google Sheets now. Come back later to complete Sections 3 &amp; 4.</div>
+        </div>
+      </div>
+      <div id="timein-submit-msg" style="display:none;font-size:.78rem;color:var(--navy);font-weight:600;padding:8px;background:#eef2fa;border-radius:6px;margin-bottom:8px;text-align:center">&#9203; Submitting Time In... Please wait.</div>
+      <div id="timein-submit-ok" style="display:none;font-size:.78rem;color:var(--green);font-weight:700;padding:8px;background:#e8f5ee;border-radius:6px;margin-bottom:8px;text-align:center">&#9989; Time In submitted! You can now close this tab and return later to finish.</div>
+      <div id="timein-submit-err" style="display:none;font-size:.78rem;color:var(--red);padding:8px;background:#fdf0f0;border-radius:6px;margin-bottom:8px">&#10060; <span id="timein-err-txt">Submission failed. Check connection and try again.</span></div>
+      <button class="btn btn-gold" id="timeInSubmitBtn" onclick="submitTimeIn()" style="width:100%;justify-content:center">
+        <span id="timein-label">&#128228; &nbsp;Submit Time In &amp; Exit for Now</span>
+        <div class="spinner" id="timein-spinner"></div>
+      </button>
+    </div>
+    <div class="btn-row-split" style="margin-top:14px">
+      <div style="font-size:.72rem;color:var(--g400);font-style:italic">&#8212; or continue filling the form without exiting &#8212;</div>
       <div style="display:flex;gap:10px">
         <button class="btn btn-secondary" onclick="go(1)">← Back</button>
         <button class="btn btn-primary" onclick="go(3)">Next: Tasks &nbsp;→</button>
@@ -464,9 +485,44 @@ function resumeProgress() {
     if (d.timeOut) { document.getElementById('f-timeout').value = d.timeOut; calcHours(); }
     if (d.rem2)    document.getElementById('f-rem2').value = d.rem2;
     if (d.photoOut) { photoOutB64 = d.photoOut; document.getElementById('img-out').src = d.photoOut; document.getElementById('prev-out').style.display='block'; document.getElementById('ok-out').classList.add('show'); document.getElementById('ua-out').style.cssText='border-color:var(--green);background:#e8f5ee'; }
+    // Restore max reached step
+    maxReachedStep = d.maxReachedStep || d.currentStep || 1;
+
+    // Show time-in submitted notice if applicable
+    if (d.timeInSubmitted) {
+      document.getElementById('resumeInfo').innerHTML =
+        'Found saved answers for <strong>' + d.name + '</strong> — Date: ' + (d.date||'?') +
+        ' &nbsp;<span style="background:#e8f5ee;color:var(--green);padding:2px 8px;border-radius:10px;font-size:.7rem;font-weight:700">✅ Time In already submitted</span><br>' +
+        '<span style="font-size:.72rem;color:#aac4e0">Come back to finish Sections 3 &amp; 4 then submit the final record.</span>';
+    } else {
+      document.getElementById('resumeInfo').textContent =
+        'Found saved answers for ' + d.name + ' — Date: ' + (d.date||'?') +
+        ' — Last saved: ' + (d.savedAt ? new Date(d.savedAt).toLocaleTimeString('en-PH') : 'recently') + '. Resume where you left off?';
+    }
+
+    // Show jump buttons so user can go directly to any completed section
+    const jumpContainer = document.getElementById('jumpBtns');
+    if (jumpContainer) {
+      jumpContainer.innerHTML = '';
+      const labels = ['', 'Section 1 — Info', 'Section 2 — Time In', 'Section 3 — Tasks', 'Section 4 — Time Out', 'Section 5 — Submit'];
+      for (let i = 1; i <= maxReachedStep; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'btn-jump';
+        btn.textContent = '→ ' + labels[i];
+        btn.onclick = (function(s){ return function(){ resumeAndGo(s); }; })(i);
+        jumpContainer.appendChild(btn);
+      }
+    }
+
     goToStep(d.currentStep || 1);
     showSaveIndicator();
   } catch(e) { discardProgress(); }
+}
+
+function resumeAndGo(step) {
+  document.getElementById('resumeBanner').classList.add('hidden');
+  if (step === 5) buildSummary();
+  goToStep(step);
 }
 
 function discardProgress() { localStorage.removeItem(SAVE_KEY); document.getElementById('resumeBanner').classList.add('hidden'); document.getElementById('f-date').value = new Date().toISOString().split('T')[0]; }
@@ -475,11 +531,16 @@ function autoSave() { clearTimeout(saveTimeout); saveTimeout = setTimeout(saveNo
 
 function manualSave() { saveNow(); alert('✅ Progress saved! You can close the browser and come back anytime to continue.'); }
 
+function saveAndNotify() {
+  saveNow();
+  alert('✅ Progress saved up to this point!\n\nYou can now CLOSE this tab.\n\nWhen you come back at the end of your shift:\n1. Open the form again\n2. Click "▶ Resume Progress"\n3. Jump directly to Section 3 — Tasks or Section 4 — Time Out to finish.');
+}
+
 function saveNow() {
   const no = document.getElementById('f-name').value;
   const p = no ? PERSONNEL.find(x => x.no === parseInt(no)) : null;
   const checkedTasks = [...document.querySelectorAll('#task-list input:checked')].map(c => c.value);
-  const data = { savedAt: new Date().toISOString(), currentStep, date: document.getElementById('f-date').value, dayType: document.getElementById('f-daytype').value, nameNo: no, name: p ? p.name : '', email: document.getElementById('f-email').value, timeIn: document.getElementById('f-timein').value, shift: document.getElementById('f-shift').value, rem1: document.getElementById('f-rem1').value, photoIn: photoInB64, tasks: checkedTasks, otherTask: document.getElementById('f-othertask').value, output: document.getElementById('f-output').value, timeOut: document.getElementById('f-timeout').value, rem2: document.getElementById('f-rem2').value, photoOut: photoOutB64 };
+  const data = { savedAt: new Date().toISOString(), currentStep, maxReachedStep, date: document.getElementById('f-date').value, dayType: document.getElementById('f-daytype').value, nameNo: no, name: p ? p.name : '', email: document.getElementById('f-email').value, timeIn: document.getElementById('f-timein').value, shift: document.getElementById('f-shift').value, rem1: document.getElementById('f-rem1').value, photoIn: photoInB64, tasks: checkedTasks, otherTask: document.getElementById('f-othertask').value, output: document.getElementById('f-output').value, timeOut: document.getElementById('f-timeout').value, rem2: document.getElementById('f-rem2').value, photoOut: photoOutB64 };
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); showSaveIndicator(); }
   catch(e) { data.photoIn = null; data.photoOut = null; if (photoInB64) try { localStorage.setItem('prc_photo_in', photoInB64); } catch(e2){} if (photoOutB64) try { localStorage.setItem('prc_photo_out', photoOutB64); } catch(e2){} try { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); showSaveIndicator(); } catch(e3){} }
 }
@@ -538,11 +599,34 @@ function calcHours() {
   autoSave();
 }
 
-function go(step) { if (step > currentStep && !validate(currentStep)) return; if (step===5) buildSummary(); saveNow(); goToStep(step); }
+// maxReachedStep tracks how far the user has gone — allows jumping back/forward freely
+let maxReachedStep = 1;
+
+function go(step) {
+  if (step > currentStep && !validate(currentStep)) return;
+  if (step === 5) buildSummary();
+  if (step > maxReachedStep) maxReachedStep = step;
+  saveNow();
+  goToStep(step);
+}
+
+// jumpTo — allows clicking step indicators to jump freely within reached steps
+function jumpTo(step) {
+  if (step > maxReachedStep) return; // can't jump ahead of where you've been
+  if (step === 5) buildSummary();
+  saveNow();
+  goToStep(step);
+}
+
 function goToStep(step) {
   document.getElementById('sec'+currentStep).classList.remove('active');
   document.getElementById('sec'+step).classList.add('active');
-  for (let i=1;i<=5;i++) { const el=document.getElementById('s'+i); el.classList.remove('active','done'); if(i<step) el.classList.add('done'); else if(i===step) el.classList.add('active'); }
+  for (let i=1;i<=5;i++) {
+    const el=document.getElementById('s'+i);
+    el.classList.remove('active','done');
+    if(i<step) el.classList.add('done');
+    else if(i===step) el.classList.add('active');
+  }
   currentStep=step;
   document.getElementById('pbar').style.width=(step/5*100)+'%';
   document.getElementById('plabel').textContent=`Step ${step} of 5`;
@@ -580,6 +664,93 @@ function buildSummary() {
   document.getElementById('sm-rem2').textContent=document.getElementById('f-rem2').value||'—';
 }
 
+// ── SUBMIT TIME IN ONLY (morning submit) ──────────────────────────
+async function submitTimeIn() {
+  if (!validate(1) || !validate(2)) return;
+  const no = parseInt(document.getElementById('f-name').value);
+  const p  = PERSONNEL.find(x => x.no === no) || {};
+  const payload = {
+    timestamp:      new Date().toISOString(),
+    date:           document.getElementById('f-date').value,
+    dayType:        document.getElementById('f-daytype').value,
+    name:           p.name    || '',
+    idNumber:       p.id      || '',
+    division:       p.division|| '',
+    email:          document.getElementById('f-email').value,
+    shift:          document.getElementById('f-shift').value,
+    timeIn:         document.getElementById('f-timein').value,
+    timeInRemarks:  document.getElementById('f-rem1').value,
+    // Placeholders — will be updated on final submit
+    tasksAccomplished: '-- TO BE COMPLETED --',
+    additionalTasks:   '',
+    itemsProcessed:    '',
+    timeOut:           '-- TO BE COMPLETED --',
+    totalHours:        '-- TO BE COMPLETED --',
+    timeOutRemarks:    '',
+    photoTimeIn:       photoInB64 ? 'Photo Uploaded' : 'Not Uploaded',
+    photoTimeOut:      '-- TO BE COMPLETED --',
+    photoTimeInData:   photoInB64 || null,
+    photoTimeOutData:  null,
+    source:            'TIME-IN-PARTIAL'
+  };
+
+  const btn = document.getElementById('timeInSubmitBtn');
+  btn.disabled = true;
+  document.getElementById('timein-label').textContent = 'Submitting...';
+  document.getElementById('timein-spinner').style.display = 'block';
+  document.getElementById('timein-submit-msg').style.display = 'block';
+  document.getElementById('timein-submit-ok').style.display  = 'none';
+  document.getElementById('timein-submit-err').style.display = 'none';
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode:   'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body:   JSON.stringify(payload)
+    });
+
+    // Mark time-in as submitted in localStorage
+    saveNow();
+    const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
+    saved.timeInSubmitted = true;
+    saved.timeInSubmittedAt = new Date().toISOString();
+    localStorage.setItem(SAVE_KEY, JSON.stringify(saved));
+
+    document.getElementById('timein-submit-msg').style.display = 'none';
+    document.getElementById('timein-submit-ok').style.display  = 'block';
+    document.getElementById('timein-spinner').style.display    = 'none';
+    document.getElementById('timein-label').textContent = '✅ Time In Submitted!';
+
+    // Update Section 2 header to show submitted state
+    document.querySelector('#sec2 .card-hdr h2').textContent = 'Section 2 — Time In ✅ Submitted';
+    document.querySelector('#sec2 .card-hdr p').textContent  = 'Your Time In has been recorded. Come back at end of shift to finish.';
+
+    // Show instruction
+    setTimeout(() => {
+      alert('✅ Time In submitted successfully!
+
+Your Time In has been recorded in Google Sheets.
+
+You can now CLOSE this tab.
+
+When you come back at the end of your shift:
+1. Open the form again
+2. Click "▶ Resume Progress"
+3. Jump to Section 3 — Tasks to continue');
+    }, 500);
+
+  } catch(err) {
+    btn.disabled = false;
+    document.getElementById('timein-label').textContent = '📤 Submit Time In & Exit for Now';
+    document.getElementById('timein-spinner').style.display = 'none';
+    document.getElementById('timein-submit-msg').style.display = 'none';
+    document.getElementById('timein-submit-err').style.display = 'block';
+    document.getElementById('timein-err-txt').textContent = 'Error: ' + err.message;
+  }
+}
+
+// ── FINAL SUBMIT (end of shift) ────────────────────────────────────
 async function submitForm() {
   const no=parseInt(document.getElementById('f-name').value); const p=PERSONNEL.find(x=>x.no===no)||{};
   const chk=[...document.querySelectorAll('#task-list input:checked')].map(c=>c.value);
