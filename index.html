@@ -222,6 +222,21 @@ textarea{min-height:80px;resize:vertical}
 .ref{display:inline-block;background:var(--navy);color:#fff;font-size:.8rem;font-weight:700;padding:5px 18px;border-radius:7px;margin:12px 0;letter-spacing:.07em}
 .s-ok{background:#e8f5ee;border:1.5px solid #a8d5b5;border-radius:9px;padding:12px;font-size:.77rem;color:var(--green);font-weight:600;margin-bottom:14px}
 
+/* TIMEOUT CAMERA */
+.tout-cam-box{position:relative;width:100%;aspect-ratio:1/1;background:#0a0a0a;border-radius:12px;overflow:hidden;margin-bottom:12px;box-shadow:0 4px 18px rgba(0,0,0,.25)}
+.tout-cam-box video{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1)}
+.tout-cam-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.6);color:#fff;font-size:.8rem;text-align:center;padding:18px;gap:8px}
+.tout-face-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);width:52%;padding-top:52%;border-radius:50%;border:3px solid rgba(220,80,60,.8);box-shadow:0 0 0 2000px rgba(0,0,0,.22);pointer-events:none}
+.tout-cam-ts{position:absolute;bottom:0;left:0;right:0;background:rgba(80,10,10,.8);color:#ff9980;font-size:.63rem;font-weight:600;padding:5px 10px;text-align:center;letter-spacing:.04em}
+.tout-capture-wrap{display:flex;justify-content:center;margin-bottom:10px}
+.btn-tout-capture{width:68px;height:68px;border-radius:50%;background:#c0392b;border:4px solid #fff;box-shadow:0 0 0 3px #c0392b,0 5px 18px rgba(192,57,43,.45);cursor:pointer;font-size:1.7rem;display:flex;align-items:center;justify-content:center;transition:var(--tr);-webkit-tap-highlight-color:transparent}
+.btn-tout-capture:hover{transform:scale(1.06);background:#a93226}
+.btn-tout-capture:active{transform:scale(.93)}
+.btn-tout-capture:disabled{background:var(--g200);box-shadow:none;border-color:var(--g200);cursor:not-allowed;transform:none}
+.tout-photo-preview{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;border:3px solid #c0392b;display:none;margin-bottom:10px}
+.tout-ts-stamp{background:#4a0a0a;color:#fff;border-radius:8px;padding:7px 12px;font-size:.7rem;text-align:center;margin-bottom:12px;display:none}
+.tout-ts-stamp span{color:#ff9980;font-weight:700}
+
 /* DIV */
 .div{height:1px;background:var(--g200);margin:16px 0}
 
@@ -461,26 +476,47 @@ textarea{min-height:80px;resize:vertical}
     </div>
     <div class="frow">
       <div class="fg">
-        <label for="f-timeout">Time Out <span class="req">*</span></label>
-        <input type="time" id="f-timeout" onchange="calcHours()">
-        <div class="err-msg" id="e-timeout">Please enter your time out.</div>
+        <label>Time Out <span class="req">*</span></label>
+        <div class="info-box" id="d-timeout-display">Captured when you take photo</div>
+        <input type="hidden" id="f-timeout">
+        <div class="err-msg" id="e-timeout">Please take your Time Out photo first.</div>
       </div>
       <div class="fg">
         <label>Total Hours Rendered</label>
-        <div class="info-box" id="d-hours">Auto-computes after Time Out is entered</div>
+        <div class="info-box" id="d-hours">Auto-computes after Time Out photo</div>
       </div>
     </div>
     <div class="fg">
       <label>Time Out Photo <span class="req">*</span></label>
-      <div class="upload-area" id="ua-out">
-        <input type="file" id="f-photoout" accept="image/*" onchange="handlePhotoOut(this)">
-        <div class="upload-icon">📷</div>
-        <div class="upload-txt"><strong>Tap to upload</strong> your Time Out photo</div>
-        <div class="upload-sub">JPEG, PNG · Max 5MB</div>
+      <div class="alert alert-warn" style="margin-bottom:10px"><span>⏱️</span><div>Your <strong>exact time-out</strong> will be captured the moment you take the photo. It cannot be edited.</div></div>
+
+      <!-- Camera view -->
+      <div class="tout-cam-box" id="toutCamBox">
+        <video id="toutVideo" autoplay playsinline muted></video>
+        <div class="tout-face-ring"></div>
+        <div class="tout-cam-ts" id="toutCamTs">Loading…</div>
+        <div class="tout-cam-overlay" id="toutCamOverlay">
+          <div style="font-size:2.2rem">📷</div>
+          <div>Starting camera…</div>
+        </div>
       </div>
-      <div class="photo-prev-sm" id="prev-out"><img id="img-out" src="" alt="Time Out Photo"><button class="rm" onclick="rmPhotoOut()">&#10005;</button></div>
-      <div class="upload-ok" id="ok-out">&#9989; Photo saved</div>
-      <div class="err-msg" id="e-photoout">Please upload your Time Out photo.</div>
+
+      <!-- Preview after capture -->
+      <img class="tout-photo-preview" id="toutPreview" alt="Time Out Photo">
+      <div class="tout-ts-stamp" id="toutTsStamp">Time-Out: <span id="toutTsVal">—</span></div>
+
+      <!-- Shutter button -->
+      <div class="tout-capture-wrap" id="toutCaptureWrap">
+        <button class="btn-tout-capture" id="toutCaptureBtn" onclick="captureTimeOut()" disabled title="Take photo to record Time Out">🔴</button>
+      </div>
+      <div class="cap-lbl" id="toutCapLbl">Tap to take your Time Out photo</div>
+
+      <!-- Retake -->
+      <div id="toutRetakeWrap" style="display:none;text-align:center;margin-bottom:10px">
+        <button class="btn btn-secondary" style="width:100%;justify-content:center" onclick="retakeTimeOut()">🔄 &nbsp;Retake Photo</button>
+      </div>
+
+      <div class="err-msg" id="e-photoout">Please take your Time Out photo.</div>
     </div>
     <div class="fg">
       <label for="f-rem2">End-of-Day Remarks <span class="hint">Optional</span></label>
@@ -849,26 +885,130 @@ function loadTasks(division) {
 function taskChanged(cb) { cb.parentElement.classList.toggle('chk',cb.checked); autoSave(); }
 
 // ── TIME OUT PHOTO ────────────────────────────────────────────────────
-function handlePhotoOut(input) {
-  const file = input.files[0]; if (!file) return;
-  if (file.size > 5*1024*1024) { alert('Photo must be under 5MB.'); input.value=''; return; }
-  const reader = new FileReader();
-  reader.onload = e => {
-    photoOutB64 = e.target.result;
-    document.getElementById('img-out').src = photoOutB64;
-    document.getElementById('prev-out').style.display = 'block';
-    document.getElementById('ok-out').classList.add('show');
-    document.getElementById('ua-out').style.cssText = 'border-color:var(--green);background:#e8f5ee';
-    autoSave();
-  };
-  reader.readAsDataURL(file);
+// ── TIME OUT CAMERA ──────────────────────────────────────────────────
+let toutStream       = null;
+let toutTimerInterval= null;
+let capturedTimeOut  = null;
+
+function startToutCamTimer() {
+  function tick() {
+    const el = document.getElementById('toutCamTs');
+    if (el) el.textContent = new Date().toLocaleString('en-PH',{month:'short',day:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+  }
+  tick();
+  toutTimerInterval = setInterval(tick, 1000);
 }
-function rmPhotoOut() {
-  photoOutB64 = null;
-  document.getElementById('f-photoout').value = '';
-  document.getElementById('prev-out').style.display = 'none';
-  document.getElementById('ok-out').classList.remove('show');
-  document.getElementById('ua-out').style.cssText = '';
+function stopToutCamTimer() { if (toutTimerInterval){clearInterval(toutTimerInterval);toutTimerInterval=null;} }
+function stopToutCamera() {
+  if (toutStream){toutStream.getTracks().forEach(t=>t.stop());toutStream=null;}
+  stopToutCamTimer();
+}
+
+async function startToutCamera() {
+  const overlay = document.getElementById('toutCamOverlay');
+  const btn     = document.getElementById('toutCaptureBtn');
+  const video   = document.getElementById('toutVideo');
+  overlay.style.display = 'flex';
+  overlay.innerHTML = '<div style="font-size:2.2rem">📷</div><div>Starting camera…</div>';
+  btn.disabled = true;
+  try {
+    toutStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:1280}},audio:false});
+    video.srcObject = toutStream;
+    await new Promise(res => { video.onloadedmetadata = res; });
+    await video.play();
+    overlay.style.display = 'none';
+    btn.disabled = false;
+    startToutCamTimer();
+  } catch(e) {
+    overlay.innerHTML = '<div style="font-size:2rem">🚫</div><div><strong>Camera access denied.</strong><br>Please allow camera and reload.</div>';
+  }
+}
+
+function captureTimeOut() {
+  const video = document.getElementById('toutVideo');
+  const btn   = document.getElementById('toutCaptureBtn');
+  btn.disabled = true;
+
+  // Lock exact timestamp
+  capturedTimeOut = new Date();
+
+  const canvas = document.createElement('canvas');
+  canvas.width  = video.videoWidth  || 640;
+  canvas.height = video.videoHeight || 640;
+  const ctx = canvas.getContext('2d');
+
+  // Mirror (selfie)
+  ctx.save(); ctx.translate(canvas.width,0); ctx.scale(-1,1);
+  ctx.drawImage(video,0,0,canvas.width,canvas.height);
+  ctx.restore();
+
+  // Stamp with RED/ORANGE watermark — distinct from Time In gold
+  const tsText = fmtTS(capturedTimeOut);
+  const label  = 'SIGN-OUT';
+  const bar    = 42;
+  // Dark red bar at bottom
+  ctx.fillStyle = 'rgba(80,10,10,0.85)';
+  ctx.fillRect(0, canvas.height-bar, canvas.width, bar);
+  // Red label badge
+  ctx.fillStyle = '#c0392b';
+  ctx.fillRect(8, canvas.height-bar+6, 72, 20);
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 11px Inter,Arial,sans-serif';
+  ctx.fillText(label, 14, canvas.height-bar+19);
+  // Orange timestamp text
+  ctx.font = 'bold 13px Inter,Arial,sans-serif';
+  ctx.fillStyle = '#ff9980';
+  ctx.fillText(tsText, 88, canvas.height-10);
+  // White name right-aligned
+  ctx.font = '11px Inter,Arial,sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,.85)';
+  const nm = currentPerson ? currentPerson.name : '';
+  const nw = ctx.measureText(nm).width;
+  ctx.fillText(nm, canvas.width-nw-10, canvas.height-bar+16);
+
+  photoOutB64 = canvas.toDataURL('image/jpeg', 0.88);
+  stopToutCamera();
+
+  // Set hidden time field and display
+  const timeStr = capturedTimeOut.toTimeString().slice(0,5);
+  document.getElementById('f-timeout').value = timeStr;
+  const disp = document.getElementById('d-timeout-display');
+  disp.className = 'info-box filled';
+  disp.textContent = fmtTS(capturedTimeOut);
+  calcHours();
+
+  // Show preview
+  document.getElementById('toutCamBox').style.display    = 'none';
+  document.getElementById('toutCaptureWrap').style.display = 'none';
+  document.getElementById('toutCapLbl').style.display    = 'none';
+  const prev = document.getElementById('toutPreview');
+  prev.src   = photoOutB64; prev.style.display = 'block';
+  document.getElementById('toutTsStamp').style.display   = 'block';
+  document.getElementById('toutTsVal').textContent       = fmtTS(capturedTimeOut);
+  document.getElementById('toutRetakeWrap').style.display = 'block';
+
+  autoSave();
+}
+
+function retakeTimeOut() {
+  photoOutB64     = null;
+  capturedTimeOut = null;
+  document.getElementById('f-timeout').value = '';
+  const disp = document.getElementById('d-timeout-display');
+  disp.className = 'info-box'; disp.textContent = 'Captured when you take photo';
+  document.getElementById('d-hours').className = 'info-box';
+  document.getElementById('d-hours').textContent = 'Auto-computes after Time Out photo';
+  document.getElementById('toutPreview').style.display   = 'none';
+  document.getElementById('toutTsStamp').style.display   = 'none';
+  document.getElementById('toutRetakeWrap').style.display = 'none';
+  document.getElementById('toutCamBox').style.display    = 'block';
+  document.getElementById('toutCaptureWrap').style.display = 'flex';
+  document.getElementById('toutCapLbl').style.display    = 'block';
+  document.getElementById('toutCapLbl').textContent      = 'Tap to take your Time Out photo';
+  document.getElementById('toutCaptureBtn').disabled     = true;
+  document.getElementById('toutCamOverlay').style.display = 'flex';
+  document.getElementById('toutCamOverlay').innerHTML    = '<div style="font-size:2.2rem">📷</div><div>Starting camera…</div>';
+  startToutCamera();
   autoSave();
 }
 
@@ -883,6 +1023,11 @@ function calcHours() {
     if (mins<0) mins+=1440;
     el.className='info-box filled';
     el.textContent = Math.floor(mins/60)+'h '+mins%60+'m  ('+( mins/60).toFixed(2)+' hrs)';
+    // also update Time Out display if capturedTimeOut exists
+    if (capturedTimeOut) {
+      const disp = document.getElementById('d-timeout-display');
+      if(disp){ disp.className='info-box filled'; disp.textContent=fmtTS(capturedTimeOut); }
+    }
   } else {
     el.className='info-box'; el.textContent='Auto-computes after Time Out is entered';
   }
@@ -901,7 +1046,7 @@ function buildSummary() {
   document.getElementById('sm-id').textContent      = p.id   || '—';
   document.getElementById('sm-div').textContent     = p.division || '—';
   document.getElementById('sm-tin').textContent     = capturedTime ? fmtTS(capturedTime) : '—';
-  document.getElementById('sm-tout').textContent    = document.getElementById('f-timeout').value ? fmtTime(document.getElementById('f-timeout').value) : '—';
+  document.getElementById('sm-tout').textContent    = capturedTimeOut ? fmtTS(capturedTimeOut) : '—';
   document.getElementById('sm-hrs').textContent     = document.getElementById('d-hours').textContent;
   document.getElementById('sm-pin').textContent     = photoInB64  ? '✅ Uploaded' : '❌ Missing';
   document.getElementById('sm-pout').textContent    = photoOutB64 ? '✅ Uploaded' : '❌ Missing';
@@ -933,7 +1078,7 @@ async function submitFinal() {
     tasksAccomplished:chk.join(' | '),
     additionalTasks:  document.getElementById('f-othertask').value,
     itemsProcessed:   document.getElementById('f-output').value,
-    timeOut:          tout ? fmtTime(tout) : '—',
+    timeOut:          capturedTimeOut ? fmtTS(capturedTimeOut) : (tout ? fmtTime(tout) : '—'),
     totalHours:       document.getElementById('d-hours').textContent,
     timeOutRemarks:   document.getElementById('f-rem2').value,
     photoTimeIn:      photoInB64  ? 'Photo Uploaded' : 'Not Uploaded',
@@ -991,6 +1136,12 @@ function goToStep(step) {
   document.getElementById('plabel').textContent='Step '+step+' of 5';
   window.scrollTo({top:0,behavior:'smooth'});
   if (step===2 && !capturedTime) startClock();
+  if (step===4) {
+    // Start Time Out camera automatically
+    setTimeout(() => {
+      if (!photoOutB64) startToutCamera();
+    }, 300);
+  }
 }
 function updateStepUI(activeStep) {
   for (let i=1;i<=5;i++) {
@@ -1024,8 +1175,14 @@ function validate(step) {
     if(chk.length===0&&!document.getElementById('f-othertask').value.trim()){se('tasks');ok=false;}else he('tasks');
   }
   if(step===4){
-    if(!document.getElementById('f-timeout').value){se('timeout');ok=false;}else he('timeout');
-    if(!photoOutB64){se('photoout');ok=false;}else he('photoout');
+    if(!photoOutB64||!capturedTimeOut){
+      document.getElementById('e-photoout').classList.add('show');
+      document.getElementById('e-timeout').classList.add('show');
+      ok=false;
+    } else {
+      document.getElementById('e-photoout').classList.remove('show');
+      document.getElementById('e-timeout').classList.remove('show');
+    }
   }
   return ok;
 }
